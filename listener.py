@@ -212,7 +212,7 @@ class Listener(object):
 			interval = self.pictureInterval
 			
 		try:
-			if len(os.listdir(self.pictureDir)) > 0
+			if len(os.listdir(self.pictureDir)) > 0:
 				# get largest file number
 				# assuming file names like 1.jpg, 2.jpg, ...
 				numbers = []
