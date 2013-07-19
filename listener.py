@@ -238,10 +238,12 @@ class Listener(object):
 			os.system("modprobe uvcvideo")
 			# capture pictures
 			while (myThreadLockNumber == self.threadLockNumberPictures):
-				s = "uvccapture -o/root/pictures/{0}.jpg -m -x640 -y480".format(index)
+				filename = "{0}/{1}.jpg".format(self.pictureDir, index)
+				command = "uvccapture -o{0} -m -x640 -y480".format(filename)
 				print "capture picture " + str(index)
 				os.system(s)
-				index += 1
+				if os.path.exists(filename):
+					index += 1
 				time.sleep(interval)
 		
 		except Exception as e:
