@@ -1,0 +1,53 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          local.autostart
+# Required-Starting:    $start
+# Required-Stopping:     $shutdown
+# Default-Starting:     2 3 4 5
+# Default-Stopping:      0 1 6
+# Short-Description: Starting all important project apps
+# Description:       Starting all important project apps like WDT, temperature logger, command listener
+### END INIT INFO
+# Author: Dietmar Sach, Patrick Vogt
+
+# Aktionen
+
+case "$1" in
+  start)
+  
+	echo "Kill all active project processes"
+	pkill -9 -f WDT-Wetterballon
+	pkill -9 -f listener_start.py
+	
+	echo "Starting watchdog timer"
+	/root/WDT-Wetterballon > /dev/null &
+	echo $! > /var/run/WDT-Wetterballon.pid
+
+	echo "Starting command listener"
+	python /root/listener_start.py &
+
+	echo "Starting temperature logger"
+	
+	echo "Starting script watcher"
+	/root/script_watcher.sh &
+	
+	;;
+
+  stop)
+  
+	echo "Stopping watchdog timer"
+	if [ -e /var/run/WDT-Wetterballon.pid ]
+	then
+		kill -KILL $(cat /var/run/WDT-Wetterballon.pid)
+	fi
+	rm /var/run/WDT-Wetterballon.pid
+	
+	echo "Stopping command listener"
+	pkill -9 -f listener_start.py
+	
+	echo "Stopping temperature logger"
+	
+	;;
+esac
+
+exit 0
