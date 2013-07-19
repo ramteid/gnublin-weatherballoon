@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# Vor der Installation alle Dateien in /root/ kopieren
+# place this script and all the other scripts and files in /root/
 
 cp local.autostart /etc/init.d/local.autostart
 
@@ -17,3 +17,5 @@ rm listener_start.pyc
 rm temp.pyc
 mkdir /root/pictures
 
+gcc wdt_starter.c -o wdt_starter
+chmod 7777 wdt_starter

@@ -16,12 +16,11 @@ case "$1" in
   start)
   
 	echo "Kill all active project processes"
-	pkill -9 -f WDT-Wetterballon
+	pkill -9 -f wdt_starter
 	pkill -9 -f listener_start.py
 	
 	echo "Starting watchdog timer"
-	/root/WDT-Wetterballon > /dev/null &
-	echo $! > /var/run/WDT-Wetterballon.pid
+	/root/wdt_starter > /dev/null &
 
 	echo "Starting command listener"
 	python /root/listener_start.py &
@@ -36,11 +35,7 @@ case "$1" in
   stop)
   
 	echo "Stopping watchdog timer"
-	if [ -e /var/run/WDT-Wetterballon.pid ]
-	then
-		kill -KILL $(cat /var/run/WDT-Wetterballon.pid)
-	fi
-	rm /var/run/WDT-Wetterballon.pid
+	pkill -9 -f wdt_starter
 	
 	echo "Stopping command listener"
 	pkill -9 -f listener_start.py
