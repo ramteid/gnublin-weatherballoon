@@ -8,16 +8,21 @@ import sys
 import time
 import os
 import random
+from temperature import Temperature
 
 class Listener(object):
 
 	def __init__(self):
+		self.pictureInterval = 20
+		self.temperatureInterval = 60
 		self.smsListeningInterval = 10
-		self.pictureInterval = 10
-		self.reportingInterval = 120
+		self.gpsReportingInterval = 120
 		self.threadLockNumberReports = 0
 		self.threadLockNumberPictures = 0
+		self.threadLockNumberTemperature = 0
 		self.pictureDir = "/root/pictures"
+		self.sendTemperature = False
+		self.temperature = Temperature()
 		
 		try:
 			# Create state machine object
@@ -95,7 +100,7 @@ class Listener(object):
 	# parameter must be a string
 	def logCoords(self, coords):
 		try:
-			with open("/root/log_coords.txt", "a") as myfile:
+			with open("/root/coordinates.log", "a") as myfile:
 				s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 				s += "	" + coords + "\n"
 				myfile.write(s)
@@ -108,7 +113,7 @@ class Listener(object):
 	# first parameter must be something convertable to s, second parameter must be a string
 	def logMessage(self, message, origin):
 		try:
-			with open("/root/log_messages.txt", "a") as myfile:
+			with open("/root/messages.log", "a") as myfile:
 				s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 				s += "	" + str(origin) + "		" + str(message) + "\n"
 				myfile.write(s)
@@ -117,15 +122,27 @@ class Listener(object):
 			print "Error while logging, can't be logged ..."
 			print e
 			
+	# first parameter must be something convertable to s, second parameter must be a string
+	def logTemperature(self, message, origin):
+		try:
+			with open("/root/temperatures.log", "a") as myfile:
+				s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+				s += "	" + str(origin) + "		" + str(message) + "\n"
+				myfile.write(s)
+
+		except Exception as e:
+			print e
+			self.logMessage(e, "logCoords")
+			
 
 	def startReportingGPS(self, myThreadLockNumber, seconds):
-		interval = self.reportingInterval
+		interval = self.gpsReportingInterval
 		try:
 			interval = int(seconds)
 		except Exception as e:
 			print e
 			self.logMessage(e, "startReportingGPS-interval")
-			interval = self.reportingInterval
+			interval = self.gpsReportingInterval
 			
 		# to avoid multiple threads, there'a lock number
 		while (myThreadLockNumber == self.threadLockNumberReports):
@@ -249,7 +266,37 @@ class Listener(object):
 		except Exception as e:
 				print e
 				self.logMessage(e, "takePictures")			
-			
+
+				
+	def initTemperature(self, seconds):
+		newThreadLockNumber = random.randint(1, 99999)
+		self.threadLockNumberTemperature = newThreadLockNumber
+		thread.start_new_thread(self.calculateTemperatureStart, (newThreadLockNumber, seconds))
+		print "thread gestartet: " + str(newThreadLockNumber)
+
+		
+	def calculateTemperatureStart(self, myThreadLockNumber, seconds):
+		interval = self.temperatureInterval
+		try:
+			interval = int(seconds)
+		except Exception as e:
+			print e
+			self.logMessage(e, "calculateTemperatureStart-interval")
+			interval = self.temperatureInterval
+		try:
+			while (myThreadLockNumber == self.threadLockNumberTemperature):
+				celsius = self.temperature.calculateTemperature()
+				fahrenheit = celsius * 33.8
+				tempString = "{0} Celsius / {1} Fahrenheit".format(celsius, tempFahrenheit)
+				logTemperature(tempString, "calculateTemperatureStart")
+				if self.sendTemperature:
+					self.sendSMS(tempString)
+				time.sleep(interval)
+		
+		except Exception as e:
+			print e
+			self.logMessage(e, "calculateTemperatureStart")
+
 
 	def processCommands(self, smslist):
 		for sms in smslist:
@@ -267,6 +314,11 @@ class Listener(object):
 					self.threadLockNumberPictures = 0
 					print "thread gestoppt"
 				
+				elif cmd == 'tempstop':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					self.threadLockNumberTemperature = 0
+					print "thread gestoppt"
+				
 				elif cmd == 'gettime':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.getSystemTime()
@@ -278,6 +330,14 @@ class Listener(object):
 				elif cmd == 'restart' or cmd == 'reboot':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					os.system("reboot")
+			
+				elif cmd == 'sendtempstart':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					self.sendTemperature = True
+					
+				elif cmd == 'sendtempstop':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					self.sendTemperature = False
 					
 				elif cmd[0:7] == 'settime':
 					self.logMessage("cmd: " + cmd, "processCommands")
@@ -298,6 +358,10 @@ class Listener(object):
 					self.threadLockNumberReports = newThreadLockNumber
 					thread.start_new_thread( self.startReportingGPS, (newThreadLockNumber, cmd[8:]) )
 					print "thread gestartet: " + str(newThreadLockNumber)
+				
+				elif cmd[0:9] == 'tempstart':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					self.initTemperature(cmd[9:])
 				
 			except Exception as e:
 				print e
