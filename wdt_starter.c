@@ -7,14 +7,21 @@
 #include <linux/watchdog.h>
 #include <Python.h>
 
-// Startet den WDT über eine Geraetedatei
-// und meldet alle 10 Sekunden ein Lebenszeichen
+// Close the WDT if an occur
+void onErrorExitWDT(char *msg)
+{
+	perror(msg);
+	Py_Finalize();
+	exit(EXIT_FAILURE);
+}
+
+// Begins the WDT and sends all 10 seconds a sign of life
 int main()
 {
-    // Startet den WDT
+    // Opens the WDT file
     int wdt_file = open("/dev/watchdog", O_WRONLY);
 
-    // Fehlermeldung per SMS und Exit, falls der WDT nicht gestartet werden kann
+    // Sends an SMS on error and close the WDT
     if (wdt_file == -1) {
 		char *msg = "Watchdog could not be started!";
 		PyObject *module, *className, *instance;
@@ -45,20 +52,13 @@ int main()
 		exit(EXIT_FAILURE);
     }
 
-    // Pingt alle 10 Sekunden den WDT an
+    // Sends all 10 seconds a sign of life
     while(1) {
         ioctl(wdt_file, WDIOC_KEEPALIVE, 0);
         sleep(10);
     }
 
-    // Schliesst den WDT
+    // Close the WDT
     close(wdt_file);
     return 0;
-}
-
-void onErrorExitWDT(char *msg)
-{
-	perror(msg);
-	Py_Finalize();
-	exit(EXIT_FAILURE);
 }
