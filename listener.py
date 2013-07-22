@@ -284,7 +284,7 @@ class Listener(object):
 			while (myThreadLockNumber == self.threadLockNumberTemperature):
 				celsius = self.temperature.calculateTemperature()
 				fahrenheit = celsius * 33.8
-				tempString = "{0} Celsius / {1} Fahrenheit".format(celsius, tempFahrenheit)
+				tempString = "{0} Celsius / {1} Fahrenheit".format(celsius, fahrenheit)
 				logTemperature(tempString, "calculateTemperatureStart")
 				if self.sendTemperature:
 					self.sendSMS(tempString)
