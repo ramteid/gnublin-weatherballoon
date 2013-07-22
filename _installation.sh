@@ -1,5 +1,4 @@
 #! /bin/sh
-
 # place this script and all the other scripts and files in /root/
 
 cp local.autostart /etc/init.d/local.autostart
@@ -17,5 +16,5 @@ rm listener_start.pyc
 rm temp.pyc
 mkdir /root/pictures
 
-gcc wdt_starter.c -o wdt_starter
+gcc wdt_starter.c -o wdt_starter -I /usr/include/python2.6 -l python2.6
 chmod 7777 wdt_starter
