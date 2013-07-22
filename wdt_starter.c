@@ -7,7 +7,7 @@
 #include <linux/watchdog.h>
 #include <Python.h>
 
-// Close the WDT if an occur
+// Exit the program if an occur
 void onErrorExitWDT(char *msg)
 {
 	perror(msg);
