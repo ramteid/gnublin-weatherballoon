@@ -19,13 +19,11 @@ case "$1" in
 	pkill -9 -f wdt_starter
 	pkill -9 -f listener_start.py
 	
-	echo "Starting watchdog timer"
+	echo "Starting internal watchdog timer"
 	/root/wdt_starter > /dev/null &
 
 	echo "Starting command listener"
 	python /root/listener_start.py &
-
-	echo "Starting temperature logger"
 	
 	echo "Starting script watcher"
 	/root/script_watcher.sh &
@@ -34,13 +32,11 @@ case "$1" in
 
   stop)
   
-	echo "Stopping watchdog timer"
+	echo "Stopping internal watchdog timer"
 	pkill -9 -f wdt_starter
 	
 	echo "Stopping command listener"
 	pkill -9 -f listener_start.py
-	
-	echo "Stopping temperature logger"
 	
 	;;
 esac
