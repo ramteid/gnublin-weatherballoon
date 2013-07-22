@@ -149,12 +149,7 @@ class Listener(object):
 			try:
 				coords = "1234.5678" #dummy data
 				self.logCoords(coords)
-
-				#signalQuality = self.sm.GetSignalQuality()
-				#percent = signalQuality['SignalPercent']
-				#if percent > 5:
 				self.sendSMS(coords)
-				
 				time.sleep(interval)
 				
 			except Exception as e:
@@ -233,6 +228,7 @@ class Listener(object):
 				# get largest file number
 				# assuming file names like 1.jpg, 2.jpg, ...
 				numbers = []
+				index = 0
 				#iterate over all files and retrieve file names
 				for i,file_name in enumerate(sorted(os.listdir(self.pictureDir))):
 					try:
@@ -240,18 +236,19 @@ class Listener(object):
 						n = s[0]
 						o = int(n)
 						numbers.append(o)
+						# sort the list descending
+						numbers.sort(reverse=True)		
+						# the highest file number plus one is the new image index
+						index = numbers[0] + 1
+						
 					except Exception as e:
 						print e
 						self.logMessage(e, "takePictures-filenames")
-				
-				# sort the list descending
-				numbers.sort(reverse=True)		
-				# the highest file number plus one is the new image index
-				index = numbers[0] + 1
+						index = 0
 			else:
 				index = 0
 			
-			# initialize video device
+			# load video module
 			os.system("modprobe uvcvideo")
 			# capture pictures
 			while (myThreadLockNumber == self.threadLockNumberPictures):
@@ -345,6 +342,7 @@ class Listener(object):
 					self.setSystemTime(datetime)
 				
 				elif cmd[0:7] == 'system_':
+					print "executing command: " + cmd
 					self.logMessage("cmd: " + cmd, "processCommands")
 					os.system(cmd[7:])
 				
@@ -362,6 +360,10 @@ class Listener(object):
 				elif cmd[0:9] == 'tempstart':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.initTemperature(cmd[9:])
+					
+				else
+					print "command not recognized"
+					self.logMessage("unknown command: " + cmd, "processCommands")
 				
 			except Exception as e:
 				print e
