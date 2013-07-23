@@ -8,12 +8,12 @@ class Temperature(object):
 		self.select_gpa()
 	
 	def select_gpa(self):
-	"""
-	Waehlt einen AD-Kanal aus.
-	"""
-	adc_file = os.open(self.device, os.RDWR)
-	os.write(adc_file, "0x0001")
-	os.close(adc_file)
+		"""
+		Waehlt einen AD-Kanal aus.
+		"""
+		adc_file = os.open(self.device, os.RDWR)
+		os.write(adc_file, "0x0001")
+		os.close(adc_file)
 
 	def get_adc(self):
 		"""
