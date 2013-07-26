@@ -24,12 +24,17 @@ class Temperature(object):
 		os.close(adc_file)
 		return result[:-1]
 
-	def calculateTemperature(self):
+	def calculateTemperature(self, amountOfValues):
 		"""
 		Berechnet die Temperatur aus einem Hexadezimalen String
 		"""
 		try:
-			temp = int(self.get_adc(), 16)
-			return temp
+			count = 0
+			temp = 0
+			while count != amountOfValues:
+				temp += int(self.get_adc(), 16)
+				count++
+			
+			return (temp / amountOfValues)
 		except Exception as e:
 			raise TemperatureException("Can't calculate the temperature")
