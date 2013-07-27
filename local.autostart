@@ -27,6 +27,9 @@ case "$1" in
 	
 	echo "Starting script watcher"
 	/root/script_watcher.sh &
+
+	echo "Starting to send an impulse every 10 seconds"
+	/root/impulse.sh &
 	
 	;;
 
