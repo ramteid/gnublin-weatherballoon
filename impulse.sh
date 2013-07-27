@@ -1,7 +1,7 @@
 #!/bin/sh
 # Sends all 10 seconds an impulse to the micro controller
 
-GPIO=3
+GPIO=11
 
 cleanup() { # Release the GPIO port
 	echo $GPIO > /sys/class/gpio/unexport
