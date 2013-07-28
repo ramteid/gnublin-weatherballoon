@@ -42,7 +42,7 @@ class Temperature(object):
 		a = self.B * self.R0
 		b = self.A * self.R0
 		c = self.R0 - self.calcR()
-		return (-b+(sqrt(b**2)-(4.0*a*c)))/(2.0*a)
+		return (-b+(sqrt((b**2)-(4.0*a*c)))/(2.0*a)
 
 	# Returns the average temperature of a given amount of temperatures
 	def getAverageOfTemperature(self, amountOfValues):
