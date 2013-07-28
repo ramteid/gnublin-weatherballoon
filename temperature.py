@@ -32,17 +32,17 @@ class Temperature(object):
 	# Calculates the resistence dependent on temperature
 	# I = U/R
 	# R = U/I
-	def calcR():
+	def calcR(self):
 		mV = int(self.get_adc(), 16)
-		return (3.3 - mV)/(mV/1000)
+		return (3.3 - mV)/(mV/1000.0)
 	
 	# Calculates the temperature with the help of
 	# the platinum temperature coefficients
-	def calculateTemperature():
+	def calculateTemperature(self):
 		a = self.B * self.R0
 		b = self.A * self.R0
 		c = self.R0 - self.calcR()
-		return (-b+(sqrt(b**2)-(4*a*c)))/(2*a)
+		return (-b+(sqrt(b**2)-(4.0*a*c)))/(2.0*a)
 
 	# Returns the average temperature of a given amount of temperatures
 	def getAverageOfTemperature(self, amountOfValues):
@@ -51,8 +51,7 @@ class Temperature(object):
 			temp = 0
 			while count != amountOfValues:
 				temp += self.calculateTemperature()
-				count++
-			
+				count += 1
 			return (temp / amountOfValues)
 		except Exception as e:
-			raise TemperatureException("Can't calculate the temperature")
+			raise Exception("Can't calculate the temperature")
