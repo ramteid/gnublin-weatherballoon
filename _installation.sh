@@ -8,6 +8,7 @@ dos2unix local.autostart
 dos2unix listener.py
 dos2unix listener_start.py
 dos2unix temperature.py
+dos2unix gpsParser.py
 dos2unix script_watcher.sh
 dos2unix impulse.sh
 dos2unix wdt_starter.c
@@ -20,6 +21,7 @@ chmod 7777 /etc/init.d/local.autostart
 chmod 7777 listener.py
 chmod 7777 listener_start.py
 chmod 7777 temperature.py
+chmod 7777 gpsParser.py
 
 chmod 7777 script_watcher.sh
 chmod 7777 impulse.sh
@@ -27,6 +29,7 @@ chmod 7777 impulse.sh
 rm listener.pyc
 rm listener_start.pyc
 rm temperature.pyc
+rm gpsParser.pyc
 mkdir /root/pictures
 
 gcc wdt_starter.c -o wdt_starter -I /usr/include/python2.6 -l python2.6

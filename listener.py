@@ -9,6 +9,7 @@ import time
 import os
 import random
 from temperature import Temperature
+from gpsParser import GpsParser
 
 class Listener(object):
 
@@ -23,6 +24,7 @@ class Listener(object):
 		self.pictureDir = "/root/pictures"
 		self.sendTemperature = False
 		self.temperature = Temperature()
+		self.gpsParser = GpsParser() # also sets the date/time via gps
 		
 		try:
 			# Create state machine object
@@ -147,9 +149,12 @@ class Listener(object):
 		# to avoid multiple threads, there'a lock number
 		while (myThreadLockNumber == self.threadLockNumberReports):
 			try:
-				coords = "1234.5678" #dummy data
+				coords = self.gpsParser.getGpsCoordinates()
+				if coords == "-":
+					raise Exception("coordinates invalid: -")
+					
 				self.logCoords(coords)
-				self.sendSMS(coords)
+				self.sendSMS("http://maps.google.de/maps?q=" + coords)
 				time.sleep(interval)
 				
 			except Exception as e:
