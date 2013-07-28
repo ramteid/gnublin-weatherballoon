@@ -8,7 +8,7 @@ class Temperature(object):
 	# Calculates the resistence dependent on temperature
 	# I = V/R
 	# R = V/I
-	def calcR(self):
+	def calculateResistence(self):
 		# Execute command and write the result to stdout
 		(stdout, stderr) = Popen(["gnublin-adcint","-b","1"], stdout=PIPE).communicate()
 		V = float(stdout) / 1000
@@ -23,9 +23,8 @@ class Temperature(object):
 		B = -5.775E-7
 		C = -4.183E-12
 		R0 = 1000          # resistence at 0 Celsius
-		R = self.calcR()
-		T = ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
-		return T
+		R = self.calculateResistence()
+		return ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
 	
 	# Returns the average temperature of a given amount of temperatures
 	def getAverageOfTemperature(self, amountOfValues):
