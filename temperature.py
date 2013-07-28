@@ -34,7 +34,7 @@ class Temperature(object):
 	# R = U/I
 	def calcR(self):
 		mV = int(self.get_adc(), 16)
-		return (3.3 - mV)/(mV/1000.0)
+		return (3300 - mV)/(mV/1000.0)
 	
 	# Calculates the temperature with the help of
 	# the platinum temperature coefficients
