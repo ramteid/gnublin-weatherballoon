@@ -27,13 +27,9 @@ class Temperature(object):
 		return ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
 	
 	# Returns the average temperature of a given amount of temperatures
-	def getAverageOfTemperature(self, amountOfValues):
-		try:
-			count = 0
-			temp = 0
-			while count != amountOfValues:
-				temp += self.calculateTemperature()
-				count += 1
-			return (temp / amountOfValues)
-		except Exception as e:
-			raise Exception("Can't calculate the temperature")
+	def getAverageOfTemperatures(self, amountOfTemperatures):
+		count, temp = 0, 0
+		while count != amountOfTemperatures:
+			temp += self.calculateTemperature()
+			count += 1
+		return temp / amountOfValues
