@@ -1,6 +1,6 @@
-@CHARSET "US-ASCII";
+@CHARSET "UTF-8";
 
 body {
 	margin: 20px;
-	font-family: 'Fauna One', serif;
+	font-family: 'Roboto', sans-serif;
 }
