@@ -1,6 +1,6 @@
 <?php
 require_once "IDatabase.php";
-require_once "logging/Logging.class.php";
+require_once PATH_LIB . "/logging/Logging.class.php";
 
 /**
  * @author Patrick Vogt
