@@ -27,3 +27,7 @@ gammu python-dev usb-modeswitch ppp gpsd gpsd-clients
 
 probably useful packets:
 dos2unix gcc g++
+
+======================
+
+To use the Gnublin API, import gnublin.h and gnublin.cpp in your project directory.
