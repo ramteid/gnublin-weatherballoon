@@ -4,11 +4,15 @@
 from subprocess import Popen, PIPE
 from datetime import datetime
 import time
+import os
 import operator
 
 class GpsParser(object):
 
 	def __init__(self):
+		# load gps receiver module
+		os.system("modprobe cdc_acm")
+	
 		# initialize dicts for NMEA recods
 		self.GPVTG = {}
 		self.GPRMC = {} # provides time, date
@@ -24,7 +28,7 @@ class GpsParser(object):
 	# returns a list of NMEA data lines beginning with $GPVTG,, ...
 	def readGpsData(self, timeout = 6):
 		try:
-			# Read some seconds from the NMEA-GPS-device and store the result into stdout. Should be 6 seconds to get all kinds of records
+			# Read for some seconds from the NMEA-GPS-device and store the result into stdout. Should be 6 seconds to get all kinds of records
 			(stdout, stderr) = Popen(["timeout", str(timeout), "cat", "/dev/ttyACM0"], stdout=PIPE).communicate()
 			# split by lines and put latest line at the top of the list
 			lines = stdout.split("\r\n").reverse()
@@ -39,18 +43,23 @@ class GpsParser(object):
 		try:
 			gpsData = self.readGpsData(timeout=2)
 			for line in gpsData:
-				if line[0:6] == "$GPRMC":
+				if line[0:6] == "$GPGGA":
 					fields = line.split(",")
 				
 					if fields[2] == "V":	# A=ok, V=warning
 						return "-"
 						
-					latitude = float(fields[3][0:2]) + ( float(fields[3][2:]) / 60.0 )
-					longitude = float(fields[5][0:2]) + ( float(fields[5][2:]) / 60.0 )
-					return str(latitude) + "," + str(longitude)
+					latitude = float(fields[2][0:2]) + ( float(fields[2][2:]) / 60.0 )
+					longitude = float(fields[4][0:2]) + ( float(fields[4][2:]) / 60.0 )
+					height_over_msl = fields[9] # height over geoid or mean sea level (schwabencenter 261m) (Meter)
+					geoidal_separation = fields[11] # distance between the geoid and ellipsoid (Meter)
+					height = height_over_msl
+					
+					coords = str(latitude) + "," + str(longitude)
+					return coords, height
 					
 		except Exception as e:
-			print "$GPRMC"
+			print "$GPGGA"
 			print e
 			return "-"
 					
@@ -132,6 +141,10 @@ class GpsParser(object):
 			elif message == "$GPGGA" and not self.GPGGA:
 				try:
 					fields = line.split(",")
+					self.GPRMC['latitude'] = float(fields[2][0:2]) + ( float(fields[2][2:]) / 60.0 )
+					self.GPRMC['direction_lat'] = fields[3] # N/S
+					self.GPRMC['longitude'] = float(fields[4][0:2]) + ( float(fields[4][2:]) / 60.0 )
+					self.GPRMC['direction_lon'] = fields[5] # E/W
 					self.GPGGA['gps_quality'] = fields[6] # 0: no fix, 1: gps fix, 2: differential gps fix
 					self.GPGGA['satellites_used'] = fields[7]
 					self.GPGGA['height_over_msl'] = fields[9] # height over geoid or mean sea level (schwabencenter 261m) (Meter)

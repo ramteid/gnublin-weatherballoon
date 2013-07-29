@@ -21,6 +21,7 @@ class Listener(object):
 		self.threadLockNumberReports = 0
 		self.threadLockNumberPictures = 0
 		self.threadLockNumberTemperature = 0
+		self.sendGPSSMS = False
 		self.pictureDir = "/root/pictures"
 		self.sendTemperature = False
 		self.temperature = Temperature()
@@ -136,30 +137,48 @@ class Listener(object):
 			print e
 			self.logMessage(e, "logCoords")
 			
-
-	def startReportingGPS(self, myThreadLockNumber, seconds):
+	
+	# get gps coordinates on demand
+	def getGPScoordinates(self):
+		try:
+			coords, height = self.gpsParser.getGpsCoordinates()
+			if coords == "-":
+				raise Exception("coordinates invalid: -")
+				
+			self.sendSMS(coords + ": " + height + "m\n" + "http://maps.google.de/maps?q=" + coords)
+				
+		except Exception as e:
+			print e
+			self.logMessage(e, "getGPScoordinates")
+			
+			
+	# thread that loops and logs/sends gps coordinates
+	def logGPScoordinates(self, myThreadLockNumber, seconds):
 		interval = self.gpsReportingInterval
 		try:
 			interval = int(seconds)
 		except Exception as e:
 			print e
-			self.logMessage(e, "startReportingGPS-interval")
+			self.logMessage(e, "logGPScoordinates-interval")
 			interval = self.gpsReportingInterval
 			
 		# to avoid multiple threads, there'a lock number
 		while (myThreadLockNumber == self.threadLockNumberReports):
 			try:
-				coords = self.gpsParser.getGpsCoordinates()
+				coords, height = self.gpsParser.getGpsCoordinates()
 				if coords == "-":
 					raise Exception("coordinates invalid: -")
 					
-				self.logCoords(coords)
-				self.sendSMS("http://maps.google.de/maps?q=" + coords)
+				self.logCoords(coords + ": " + height + "m")
+				
+				if self.sendGPSSMS:
+					self.sendSMS(coords + ": " + height + "m\n" + "http://maps.google.de/maps?q=" + coords)
+				
 				time.sleep(interval)
 				
 			except Exception as e:
 				print e
-				self.logMessage(e, "startReportingGPS-report")
+				self.logMessage(e, "logGPScoordinates-report")
 
 
 	def setSystemTime(self, datetime):
@@ -306,66 +325,91 @@ class Listener(object):
 				cmd = sms['Text'].lower()
 				print "cmd: " + cmd
 
-				if cmd == 'repstop':
+				# stop gps logging
+				if cmd == 'loggpsstop':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.threadLockNumberReports = 0
 					print "thread gestoppt"
 				
+				# start sending gps coordinates via sms
+				elif cmd == 'repgpsstart':
+					self.sendGPSSMS = True
+				
+				# stop sending gps coordinates via sms
+				elif cmd == 'repgpsstop':
+					self.sendGPSSMS = False
+				
+				# get gps coordinates on demand
+				elif cmd == 'getgps':
+					self.getGPScoordinates()
+				
+				# stop capturing images with camera
 				elif cmd == 'capstop':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.threadLockNumberPictures = 0
 					print "thread gestoppt"
 				
-				elif cmd == 'tempstop':
+				# stop logging temperature
+				elif cmd == 'logtempstop':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.threadLockNumberTemperature = 0
 					print "thread gestoppt"
 				
-				elif cmd == 'gettime':
-					self.logMessage("cmd: " + cmd, "processCommands")
-					self.getSystemTime()
-				
-				elif cmd == 'getnetwork':
-					self.logMessage("cmd: " + cmd, "processCommands")
-					self.getNetworkInfo()
-					
-				elif cmd == 'restart' or cmd == 'reboot':
-					self.logMessage("cmd: " + cmd, "processCommands")
-					os.system("reboot")
-			
+				# start sending temperatures via sms
 				elif cmd == 'sendtempstart':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.sendTemperature = True
 					
+				# stop sending temperatures via sms
 				elif cmd == 'sendtempstop':
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.sendTemperature = False
 					
-				elif cmd[0:7] == 'settime':
+				# send the time via sms
+				elif cmd == 'gettime':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					self.getSystemTime()
+				
+				# send network information via sms
+				elif cmd == 'getnetwork':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					self.getNetworkInfo()
+					
+				# reboot system
+				elif cmd == 'restart_system' or cmd == 'reboot_system':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					os.system("reboot")
+			
+				# set time to a value specified in a sms
+				elif cmd[0:7] == 'settime':		#e.g. settime20130802120500
 					self.logMessage("cmd: " + cmd, "processCommands")
 					datetime = cmd[7:]
 					self.setSystemTime(datetime)
 				
-				elif cmd[0:7] == 'system_':
+				# run any system command
+				elif cmd[0:7] == 'system_':		#e.g. system_reboot
 					print "executing command: " + cmd
 					self.logMessage("cmd: " + cmd, "processCommands")
 					os.system(cmd[7:])
 				
+				# start capturing pictures with camera
 				elif cmd[0:8] == 'capstart':	#e.g. capstart30
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.initCapturing(cmd[8:])
 					
-				elif cmd[0:8] == 'repstart':	#e.g. repstart30
-					self.logMessage("cmd: " + cmd, "processCommands")
-					newThreadLockNumber = random.randint(1,99999)
-					self.threadLockNumberReports = newThreadLockNumber
-					thread.start_new_thread( self.startReportingGPS, (newThreadLockNumber, cmd[8:]) )
-					print "thread gestartet: " + str(newThreadLockNumber)
-				
-				elif cmd[0:9] == 'tempstart':
+				# start logging temperatures
+				elif cmd[0:9] == 'logtempstart':	#e.g. tempstart30
 					self.logMessage("cmd: " + cmd, "processCommands")
 					self.initTemperature(cmd[9:])
 					
+				# start logging gps coordinates
+				elif cmd[0:11] == 'loggpsstart':	#e.g. loggpsstart30
+					self.logMessage("cmd: " + cmd, "processCommands")
+					newThreadLockNumber = random.randint(1,99999)
+					self.threadLockNumberReports = newThreadLockNumber
+					thread.start_new_thread( self.logGPScoordinates, (newThreadLockNumber, cmd[11:]) )
+					print "thread gestartet: " + str(newThreadLockNumber)
+				
 				else
 					print "command not recognized"
 					self.logMessage("unknown command: " + cmd, "processCommands")
