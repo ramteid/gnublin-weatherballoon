@@ -16,15 +16,10 @@ class Temperature(object):
 	
 	# Calculates the temperature with the help of
 	# the platinum temperature coefficients.
-	# Platinum temperature coefficients
 	# DIN EN 60751 / IEC 60751
 	def calculateTemperature(self):
-		A = 3.9083E-3
-		B = -5.775E-7
-		C = -4.183E-12
-		R0 = 1000          # resistence at 0 Celsius
 		R = self.calculateResistence()
-		return ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
+		return (sqrt(15.274808890000001 + (0.00231*(1000-R))) - 3.9083) / -0.001155
 	
 	# Returns the average temperature of a given amount of temperatures
 	def getAverageOfTemperatures(self, amountOfTemperatures):
