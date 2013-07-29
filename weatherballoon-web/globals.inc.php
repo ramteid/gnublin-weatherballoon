@@ -11,4 +11,5 @@ defined("DB_PASSWORD") || define("DB_PASSWORD", "gnublin_lpc3131!");
 // Global constants
 defined("PATH_LIB") || define("PATH_LIB", realpath(dirname(__FILE__) . "/libs/"));
 defined("PATH_CLASSES") || define("PATH_CLASSES", realpath(dirname(__FILE__) . "/classes/"));
+defined("PATH_TEMPLATE") || define("PATH_TEMPLATE", realpath(dirname(__FILE__) . "/template/"));
 ?>

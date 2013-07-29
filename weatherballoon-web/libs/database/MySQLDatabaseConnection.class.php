@@ -2,11 +2,13 @@
 require_once "IDatabase.php";
 require_once PATH_LIB . "/logging/Logging.class.php";
 
-/**
- * @author Patrick Vogt
- * @since 2013-02-17
- * @version 1.0
- */
+//***********************************************
+// Klasse: MySQLDatabaseConnection
+// Beschreibung: Implementiert die Methoden des Interface IDatabase
+//		fuer die Datenbankanbindung
+// Autor: Patrick Vogt, am 30.07.2013
+// MatrikelNr: 924789
+//***********************************************
 class MySQLDatabaseConnection implements IDatabase {
 	
 	private $dns;

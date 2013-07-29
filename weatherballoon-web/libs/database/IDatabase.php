@@ -1,9 +1,11 @@
 <?php
-/**
- * @author Patrick Vogt
- * @since 2013-04-01
- * @version 1.0
- */
+//***********************************************
+// Interface: IDatabase
+// Beschreibung: Definiert Methoden fuer die
+//		Datenbankanbindung
+// Autor: Patrick Vogt, am 30.07.2013
+// MatrikelNr: 924789
+//***********************************************
 interface IDatabase {
 
 	/**
@@ -22,7 +24,7 @@ interface IDatabase {
 	public function getNumRows();
 	
 	/**
-	 * 
+	 * Returns the result of a query
 	 * @param PDO $constant
 	 */
 	public function getResult($constant);
