@@ -35,10 +35,18 @@
 						<div class="nav-collapse">
 							<ul class="nav pull-right">
 								<li class="active"><a href="#">Home</a></li>
+								<li><a href="#project">Projekt</a></li>
+								<li><a href="https://github.com/ramteid/gnublin-weatherballoon/" target="_blank">Git</a></li>
 								<li class="dropdown">
 									<a class="dropdown-toggle" href="#" data-toggle="dropdown">Login <strong class="caret"></strong></a>
 									<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
-										
+										<form id="login-form" action="login.php" method="post">
+											<input class="text" type="text" name="username" placeholder="Benutzername">
+											<input class="text" type="password" name="password" placeholder="Passwort">
+											<input type="checkbox" id="remember_me" name="remember_me">
+											<label for="remember_me" class="string optional">Eingeloggt bleiben</label>
+											<input class="submit" type="submit" class="btn btn-primary" value="Anmelden">
+										</form>
 									</div>
 								</li>
 							</ul>

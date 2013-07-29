@@ -4,3 +4,19 @@ body {
 	margin: 20px;
 	font-family: 'Roboto', sans-serif;
 }
+
+#login-form .text {
+	margin-bottom: 15px;
+}
+
+#login-form .submit {
+	clear: left;
+	width: 100%;
+	height: 32px;
+	font-size: 13px;
+}
+
+#remember_me {
+	float: left;
+	margin-right: 10px;
+}
