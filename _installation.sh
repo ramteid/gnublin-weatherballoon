@@ -2,7 +2,6 @@
 # place this script and all the other scripts and files in /root/
 # run this script with root privileges
 
-
 # convert line endings from windows to unix format
 dos2unix local.autostart
 dos2unix listener.py
@@ -12,7 +11,6 @@ dos2unix gpsParser.py
 dos2unix script_watcher.sh
 dos2unix impulse.sh
 dos2unix wdt_starter.c
-
 
 cp local.autostart /etc/init.d/local.autostart
 
@@ -32,9 +30,12 @@ rm temperature.pyc
 rm gpsParser.pyc
 mkdir /root/pictures
 
+# compile the c files
 gcc wdt_starter.c -o wdt_starter -I /usr/include/python2.6 -l python2.6
-chmod 7777 wdt_starter
+gcc temperature.c -o temperature
 
+chmod 7777 wdt_starter
+chmod 7777 temperature
 
 # assign runlevel
 update-rc.d local.autostart defaults
