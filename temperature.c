@@ -17,10 +17,12 @@ float calculateResistence()
     {
         return -1;
     }
+	float V;
     char buffer[MAX_BUFFER]
     fgets(buffer, MAX_BUFFER, fp);
     pclose(fp);
-    return atoi(buffer);
+	V = atoi(buffer) / 1000.0;
+    return (3.3 - V) / (V / 1000.0);
 }
 
 /*
