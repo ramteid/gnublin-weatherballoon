@@ -1,13 +1,12 @@
 ﻿<?php
+//*****************************************************************
+// Script: deleteImage.php
+// Scriptbeschreibung: Stellt alle Bilder dar für eine Lösch-Auswahl 
+// Autor: Dietmar Sach, am 30.07.2013
+// MatrikelNr: 924738
+//***************************************************************** 
 
-echo '<link rel="stylesheet" type="text/css" href="shadowbox-3.0.3/shadowbox.css">
-<script type="text/javascript" src="shadowbox-3.0.3/shadowbox.js"></script>
-<script type="text/javascript"> 
-Shadowbox.init();
-</script>';
-
-
-include("tools.php");
+include("gallery/tools.php");
 
 if (isset($_POST['images'])) {
 	foreach ($_POST['images'] as $image) 

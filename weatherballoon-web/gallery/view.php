@@ -1,7 +1,12 @@
 ﻿<?php
+//*****************************************************************
+// Script: view.php
+// Scriptbeschreibung: Stellt die Bilder im Bildverzeichnis dar
+// Autor: Dietmar Sach, am 30.07.2013
+// MatrikelNr: 924738
+//***************************************************************** 
 
-include("tools.php"); 
-
+include("gallery/tools.php"); 
 
 $files = filesInDir("gallery/pics");
 if (empty($files))

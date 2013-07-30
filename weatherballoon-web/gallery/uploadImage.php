@@ -1,27 +1,23 @@
-﻿<?php 
+﻿<?php
+//*****************************************************************
+// Script: uploadImage.php
+// Scriptbeschreibung: Prüft ob das Formular abgeschickt wurde und 
+//					   ruft Verarbeitungs-Routine auf.
+// Autor: Dietmar Sach, am 30.07.2013
+// MatrikelNr: 924738
+//***************************************************************** 
+
 include("gallery/tools.php");
 
+// Prüfe ob Formular abgesendet wurde und rufe ggf. Verarbeitungs-Routine auf.
 if (!empty($_POST['senden']) && !empty($_FILES))
+{
 	include("gallery/processImage.php");
+}
+
 ?>
 
-<form name="bildupload" method="post" action="index.php?page=galleryUpload" enctype="multipart/form-data">
-	Bis zu 10 Bilder gleichzeitig hochladen: <br>
-	<br>
-	<br>
-	<input type="file" name="toProcess[]"></input><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<input type="file" name="toProcess[]"><br>
-	<br>
-	<input class="btn" type="submit" name="senden" value="Hochladen">
-  </form>
+
 
 
 
