@@ -8,9 +8,11 @@
 
 // Global application settings
 date_default_timezone_set("Europe/Berlin");
+// Address to send log messages
 defined("LOG_EMAIL") || define("LOG_EMAIL", "patrick.vogt@hs-augsburg.de");
 defined("DEVELOPMENT_ENVIRONMENT") || define("DEVELOPMENT_ENVIRONMENT", "development");
 
+// Database settings
 defined("DB_DNS") || define("DB_DNS", "mysql:host=localhost;dbname=map");
 defined("DB_USER") || define("DB_USER", "gnublin");
 defined("DB_PASSWORD") || define("DB_PASSWORD", "lpc3131!");
