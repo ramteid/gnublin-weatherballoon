@@ -69,10 +69,10 @@ MatrikelNr:			924789
 								<?php } else { ?>
 								<li class="dropdown">
 									<a class="dropdown-toggle" href="#" data-toggle="dropdown">
-										Login <strong class="caret"></strong>
+										Verwaltung <strong class="caret"></strong>
 									</a>
 									<ul class="dropdown-menu" style="padding: 15px; padding-bottom: 5px;">
-										<li><a href="?page=input">Daten eintragen</a></li>
+										<li><a href="?page=input">Flugdaten eintragen</a></li>
 										<li class="dropdown-submenu pull-left">
 											<a tabindex="-1" href="#">Bilder</a>
 											<ul class="dropdown-menu">
@@ -81,6 +81,7 @@ MatrikelNr:			924789
 											</ul>
 										</li>
 										<li><a href="?page=sponsoren">Sponsoren</a></li>
+										<li><a href="?page=log">Log-Eintr&auml;ge</a></li>
 										<li class="divider"></li>
 										<li><a href="code_behind/logout.php">Abmelden</a></li>
 									</ul>

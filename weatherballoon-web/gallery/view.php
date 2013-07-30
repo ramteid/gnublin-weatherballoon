@@ -6,25 +6,25 @@
 // MatrikelNr: 924738
 //***************************************************************** 
 
+// Hilfsfunktionen
 include("gallery/tools.php"); 
 
+// Hole alle Bilder aus dem Verzeichnis
 $files = filesInDir("gallery/pics");
+
+// Prüfe ob Bilder vorhanden sind, gebe ggf. Meldung aus
 if (empty($files))
-	echo "Es sind momentan keine Bilder vorhanden";
+	alert("alert-info", "Bilder!", "Es sind momentan keine Bilder vorhanden");
+
+// Ansonsten zeige alle Bilder an
 else
 {
+	// Beginn der Auflistung
 	echo '<ul class="thumbnails">';
 	
+	// Iteriere über Bilder und erzeuge HTML-Code für die Darstellung mit Shadowbox
 	foreach ($files as $file)
 	{
-		// echo '<div style="float:left; margin:10px; width: 150px; height: 113px; background-color: white; border: 1px solid black; overflow:hidden;">
-					// <div style="width: 150px; height: 113px; display: table-cell; vertical-align:middle; text-align:center;">
-						// <a rel="shadowbox;title=" href="gallery/pics/'.$file.'">
-							// <img src="gallery/pics/thumbs/'.$file.'">
-						// </a>
-					// </div>
-				// </div>
-				// ';
 		echo '<li class="span2">
 				<a href="gallery/pics/'.$file.'" rel="shadowbox" class="thumbnail">
 					<img src="gallery/pics/thumbs/'.$file.'">
@@ -32,9 +32,9 @@ else
 			  </li>';
 	}
 	
+	// Ende der Auflistung
 	echo '</ul>';
 }
 
-	
 	
 ?>

@@ -7,6 +7,7 @@
 // MatrikelNr: 924738
 //***************************************************************** 
 
+// Hilfsfunktionen
 include("gallery/tools.php");
 
 // Prüfe ob Formular abgesendet wurde und rufe ggf. Verarbeitungs-Routine auf.

@@ -7,6 +7,7 @@
 // MatrikelNr: 924738
 //***************************************************************** 
 
+// Hilfsfunktionen
 include("gallery/tools.php");
 
 // Setze die Zugriffsrechte für die Bild-Verzeichnisse

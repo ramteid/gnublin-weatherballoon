@@ -54,6 +54,7 @@ function whiteList() {
 			"input",
 			"forgotLogin",
 			"sponsoren",
+			"log"
 	);
 	return $pages;
 }
