@@ -16,8 +16,8 @@
 				$db->query("SELECT * FROM sponsors", array());
 				foreach ($db->getResult(PDO::FETCH_ASSOC) as $row) {
 					echo "<tr>";
-					echo "	<td>" . utf8_encode($row["name"]) . "</td>";
-					echo "	<td>" . utf8_encode($row["thanks"]) . "</td>";
+					echo "	<td>" . $row["name"] . "</td>";
+					echo "	<td>" . $row["thanks"] . "</td>";
 					echo "	<td><a href='" . $row["link"] . "' target='_blank'>" . $row["link"] . "</a></td>";
 					echo "</tr>";
 				}
@@ -28,4 +28,5 @@
 			?>
 		</tbody>
 	</table>
+	<p>Nat&uuml;rlich gilt unser herzlichster Dank auch allen unerw&auml;hnten Helferinnen und Helfern.</p>
 </div>

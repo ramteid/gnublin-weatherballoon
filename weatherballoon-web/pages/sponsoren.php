@@ -55,8 +55,8 @@ if (isset($_SESSION["user"])) {
 					$db->query("SELECT * FROM sponsors", array());
 					foreach ($db->getResult(PDO::FETCH_ASSOC) as $row) {
 						echo "<tr>";
-						echo "	<td>" . utf8_encode($row["name"]) . "</td>";
-						echo "	<td>" . utf8_encode($row["thanks"]) . "</td>";
+						echo "	<td>" . $row["name"] . "</td>";
+						echo "	<td>" . $row["thanks"] . "</td>";
 						echo "	<td><a href='" . $row["link"] . "' target='_blank'>" . $row["link"] . "</a></td>";
 						echo "	<td><a class='tip' href='?page=sponsoren&action=delete&id=" . $row['id'] . "' data-toggle='tooltip' title='Sponsor entfernen'><i class='icon-remove'></i></a></td>";
 						echo "</tr>";
