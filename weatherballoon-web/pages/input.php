@@ -1,9 +1,18 @@
 <?php
+//*****************************************************************
+// Script: input.php
+// Scriptbeschreibung: Stellt das Formular zur Eingabe der GPX-Datensätze dar
+// Autor: Dietmar Sach, am 30.07.2013
+// MatrikelNr: 924738
+//***************************************************************** 
+
+// Prüfe ob der Benutzer angemeldet ist
 if (isset($_SESSION["user"])) {
 
-	// Pruefe ob POST-Daten vorliegen
+	// Pruefe ob POST-Daten vorliegen, also ob das Formular abgeschickt wurde
 	if (!empty($_POST) && !empty($_POST['gpsdata']))
 	{
+		// Wenn ja, inkludiere Script, das POST-Daten verarbeitet
 		include("code_behind/input.php");
 	}
 ?>

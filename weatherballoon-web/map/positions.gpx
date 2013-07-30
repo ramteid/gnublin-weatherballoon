@@ -5,12 +5,12 @@
  </metadata>
  <trk>
   <trkseg>
-   <trkpt lat="48.3568" lon="10.9245">
+   <trkpt lat="46.3568" lon="11.9245">
     <ele>176</ele>
     <time>2013-08-02T07:59:59.000Z</time>
     <temperature>10.05</temperature>
    </trkpt>
-   <trkpt lat="49.3568" lon="19.9245">
+   <trkpt lat="47.3568" lon="15.9245">
     <ele>276</ele>
     <time>2013-08-02T08:59:59.000Z</time>
     <temperature>20.05</temperature>

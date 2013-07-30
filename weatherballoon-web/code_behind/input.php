@@ -1,4 +1,14 @@
 ﻿<?php
+//*****************************************************************
+// Script: input.php
+// Scriptbeschreibung: Wird vom Eingabeformular für GPX-Datensätze
+//						aufgerufen. Verarbeitet diese Datensätze und 
+//						schreibt diese in die Datenbank
+// Autor: Dietmar Sach, am 30.07.2013
+// MatrikelNr: 924738
+//***************************************************************** 
+
+
 // Prüfe ob POST-Daten vorliegen
 if (empty($_POST) || empty($_POST['gpsdata']))
 {
@@ -14,7 +24,7 @@ $lines = explode("\n", $textfield);
 // Zeilen-Zähler definieren,
 // definiere Standard-Rückmeldungstext,
 // definiere Fehler-Variable für Erkennung von Fehlerfällen
-$count = 0;
+$count = 1;
 $statusText = "";
 $error = false;
 
@@ -25,8 +35,16 @@ $heights = array();
 $temperatures = array();
 
 // Teile jede Zeile anhand von Leerzeichen auf und prüfe Werte
-foreach ($lines as &$line)
+foreach ($lines as $line)
 {
+	// Ignoriere Leerzeilen
+	if (empty($line))
+	{
+		$count++;
+		continue;
+	}
+
+	// Teile Zeile nach Leerzeichen auf
 	$values = explode(" ", trim($line));
 	
 	// Jede Zeile muss 5 Werte besitzen, sonst gebe Fehler aus
@@ -108,7 +126,7 @@ $conn->query( "TRUNCATE TABLE records;" );
 $query = "INSERT INTO records (datetime, longitude, latitude, height, temperature) VALUES (:datetime, :longitude, :latitude, :height, :temperature);";
 
 // Iteriere über alle eingegebenen Datensätze
-for ($i = 0; $i < $count; $i++)
+for ($i = 1; $i <= $count; $i++)
 {
 	// Definiere Parameter-Array, wird automatisch in den VALUES(...)-Teil der Anfrage eingefügt
 	$params = array(':datetime' => $datetimes[$i],

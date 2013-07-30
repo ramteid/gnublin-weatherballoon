@@ -5,7 +5,7 @@
 //					und leitet verlinkte Seiten weiter
 // Autor: 			Patrick Vogt, Dietmar Sach
 // Datum:			30.07.2013
-// MatrikelNr: 		924789, 
+// MatrikelNr: 		924789, 924738
 //*******************************************************************
 include "globals.inc.php";
 require_once PATH_LIB . "/database/MySQLDatabaseConnection.class.php";

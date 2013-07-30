@@ -3,7 +3,7 @@ CSS: 			layout.css
 Beschreibung: 	Erweitertes Layout neben Bootstrap
 Autor:			Patrick Vogt, Dietmar Sach
 Datum:			30.07.2013
-MatrikelNr:		924789, 
+MatrikelNr:		924789, 924738
 ***************************************************/
 @CHARSET "UTF-8";
 
@@ -56,4 +56,10 @@ h1 {
 .map_container {
 	margin-top: 45px;
 	width: 1025px;
+}
+
+/* Bildergalerie */
+.div0 {
+	float:left; 
+	margin:10px 10px 60px 10px;
 }

@@ -80,7 +80,7 @@ MatrikelNr:			924789
 												<li><a tabindex="-1" href="?page=galleryDelete">Bilder l&ouml;schen</a></li>
 											</ul>
 										</li>
-										<li><a href="?page=sponsoren">Sponsoren</a></li>
+										<li><a href="?page=sponsoren">Sponsorenverwaltung</a></li>
 										<li><a href="?page=log">Log-Eintr&auml;ge</a></li>
 										<li class="divider"></li>
 										<li><a href="code_behind/logout.php">Abmelden</a></li>
