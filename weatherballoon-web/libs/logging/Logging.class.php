@@ -1,13 +1,13 @@
 <?php
 require_once "log4php/Logger.php";
 
-//***********************************************
+//******************************************************
 // Klasse: Logging
 // Beschreibung: Implementiert Einstellungen fuer das
-//		Logging-Framework log4php von Apache
+//		Logging-Framework log4php der Apache Foundation
 // Autor: Patrick Vogt, am 30.07.2013
 // MatrikelNr: 924789
-//***********************************************
+//******************************************************
 class Logging {
 	
 	/**

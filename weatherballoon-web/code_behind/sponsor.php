@@ -1,4 +1,10 @@
 <?php
+//******************************************************************
+// Datei: 			sponsor
+// Beschreibung: 	Fuegt einen neuen Sponsor hinzu.
+// Autor: 			Patrick Vogt, am 30.07.2013
+// MatrikelNr: 		924789
+//******************************************************************
 if ($db->open()) {
 	$params = array(":name" => utf8_encode($_POST["name"]), ":thanks" => utf8_encode($_POST["thanks"]), ":link" => $_POST["link"]);
 	$bool = $db->query("INSERT INTO sponsors (name, thanks, link) VALUES (:name, :thanks, :link)", $params);

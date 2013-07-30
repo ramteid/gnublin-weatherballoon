@@ -1,3 +1,11 @@
+<!-- 
+Datei:				sponsoren
+Beschreibung:		Listet die Sponsoren auf. Um die Sponsoren zu loeschen, muss der x-Button gedrueckt werden.
+					In einem Modal-Fenster wird ein Formular zur Erstellung von Sponsoren dargestellt.
+					Diese Seite ist nur zu erreichen, wenn man sich auf der Seite angemeldet hat.
+Autor:				Patrick Vogt, am 31.12.2013
+MatrikelNr:			924789
+-->
 <?php
 if (isset($_SESSION["user"])) {
 	if (!empty($_POST) && !empty($_POST['sponsor'])) {

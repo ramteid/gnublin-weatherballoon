@@ -32,11 +32,15 @@ class MySQLDatabaseConnection implements IDatabase {
 		$this->logger = $log->getLogger("main");
 	}
 	
+	/**
+	 * Close the connection to the database
+	 */
 	public function __destruct() {
 		$this->close();
 	}
 	
 	/**
+	 * Open the connection to the database
 	 * (non-PHPdoc)
 	 * @see IDatabase::open()
 	 */
@@ -50,6 +54,7 @@ class MySQLDatabaseConnection implements IDatabase {
 	}
 	
 	/**
+	 * Close the connection to the database
 	 * (non-PHPdoc)
 	 * @see IDatabase::close()
 	 */
@@ -60,6 +65,7 @@ class MySQLDatabaseConnection implements IDatabase {
 	}
 	
 	/**
+	 * Get the number of affected rows
 	 * (non-PHPdoc)
 	 * @see IDatabase::getNumRows()
 	 */
@@ -73,6 +79,7 @@ class MySQLDatabaseConnection implements IDatabase {
 	}
 	
 	/**
+	 * Returns the result of a query as a multidimensional array
 	 * (non-PHPdoc)
 	 * @see IDatabase::getResult()
 	 */
@@ -86,6 +93,7 @@ class MySQLDatabaseConnection implements IDatabase {
 	}
 	
 	/**
+	 * Execute the query
 	 * (non-PHPdoc)
 	 * @see IDatabase::query()
 	 */

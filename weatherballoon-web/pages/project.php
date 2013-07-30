@@ -1,3 +1,9 @@
+<!-- 
+Datei:				project
+Beschreibung:		Projektbeschreibung des Wetterballons
+Autor:				Patrick Vogt, am 31.07.2013
+MatrikelNr:			924789
+-->
 <div class="container">
 	<div class="hero-unit balloons">
 		<h1>Gnublin Wetterballon</h1>

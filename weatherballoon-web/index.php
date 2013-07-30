@@ -1,4 +1,12 @@
 <?php
+//*******************************************************************
+// Datei: 			index
+// Beschreibung: 	Startseite der Webseite. Startet eine Session und
+//					und leitet verlinkte Seiten weiter
+// Autor: 			Patrick Vogt, Dietmar Sach
+// Datum:			30.07.2013
+// MatrikelNr: 		924789, 
+//*******************************************************************
 include "globals.inc.php";
 require_once PATH_LIB . "/database/MySQLDatabaseConnection.class.php";
 require_once PATH_LIB . "/logging/Logging.class.php";

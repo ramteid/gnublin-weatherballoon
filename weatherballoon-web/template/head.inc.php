@@ -1,3 +1,9 @@
+<!-- 
+Datei:				head.inc.php
+Beschreibung:		Kopf der Webseite mit Menue
+Autor:				Patrick Vogt, am 30.07.2013
+MatrikelNr:			924789
+-->
 <!DOCTYPE html>
 <html>
 	<head>

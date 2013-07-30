@@ -1,4 +1,11 @@
 <?php
+//******************************************************************
+// Datei: 			forgotLogin
+// Beschreibung: 	Versendet den vergessenen Benutzername bzw.
+//					generiert ein neues Passwort und versendet dies.
+// Autor: 			Patrick Vogt, am 30.07.2013
+// MatrikelNr: 		924789
+//******************************************************************
 require_once PATH_LIB . "/htmlMimeMail5/htmlMimeMail5.php";
 
 $mail = new htmlMimeMail5();
@@ -29,6 +36,9 @@ if ($_GET["forgot"] == "username") {
 } else if ($_GET["forgot"] == "password") {
 	if ($db->open()) {
 		
+		// Algorithmus zur Generierung eines neuen Passworts.
+		// Aus der Menge des Alphabets werden zufaellig acht
+		// Zeichen zu einen neuen Passwort zusammengesetzt.
 		$alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 		$pass = array();
 		$alphaLength = strlen($alphabet) - 1;

@@ -1,3 +1,10 @@
+<!-- 
+Datei:				forgotLogin
+Beschreibung:		Stellt zwei Formulare zur Verfuegung, um sich Benutzername
+					und Passwort per Email senden zu lassen
+Autor:				Patrick Vogt, am 31.07.2013
+MatrikelNr:			924789
+-->
 <?php 
 if (isset($_GET["forgot"])) {
 	include "code_behind/forgotLogin.php";

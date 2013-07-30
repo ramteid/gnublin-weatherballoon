@@ -1,3 +1,9 @@
+<!-- 
+Datei:				danke
+Beschreibung:		Listet Sponsoren und Personen zur Danksagung auf
+Autor:				Patrick Vogt, am 30.07.2013
+MatrkikelNr:		924789
+-->
 <div class="container">
 	<div class="hero-unit">
 		<h1>Danke!</h1>
