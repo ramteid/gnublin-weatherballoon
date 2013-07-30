@@ -32,6 +32,10 @@ class MySQLDatabaseConnection implements IDatabase {
 		$this->logger = $log->getLogger("main");
 	}
 	
+	public function __destruct() {
+		$this->close();
+	}
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see IDatabase::open()
@@ -72,7 +76,7 @@ class MySQLDatabaseConnection implements IDatabase {
 	 * (non-PHPdoc)
 	 * @see IDatabase::getResult()
 	 */
-	public function getResult($constant) {
+	public function getResult($constant = PDO::FETCH_ASSOC) {
 		if ($this->exec && !is_null($this->stmt)) {
 			return $this->stmt->fetchAll($constant);
 		} else {
@@ -83,37 +87,17 @@ class MySQLDatabaseConnection implements IDatabase {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see IDatabase::bind()
-	 */
-	public function bind($params) {
-		try {
-			if (!is_null($this->stmt)) {
-				foreach ($params as $parameter => $variable) {
-					$this->stmt->bindParam($parameter, $variable);
-				}
-			} else {
-				throw new PDOException("Access on stmt=null: Unable to bind parameters.");
-			}
-		} catch (PDOException $e) {
-			$this->logger->error($e->getMessage());
-		}
-	}
-	
-	/**
-	 * (non-PHPdoc)
 	 * @see IDatabase::query()
 	 */
-	public function query($stmt, $params) {
+	public function query($stmt, $params = array()) {
 		try {
 			$this->identifier->beginTransaction();
 			$this->activeTransaction = true;
 			$this->stmt = $this->identifier->prepare($stmt);
-			if (is_array($params) && count($params) != 0) {
-				$this->bind($params);
-			}
-			$this->exec = $this->stmt->execute();
+			$this->exec = $this->stmt->execute($params);
 			$this->identifier->commit();
 			$this->activeTransaction = false;
+			return $this->exec;
 		} catch (PDOException $e) {
 			try {
 				if ($this->activeTransaction) {
@@ -125,6 +109,7 @@ class MySQLDatabaseConnection implements IDatabase {
 				$this->activeTransaction = false;
 				$this->logger->fatal($ex->getMessage());
 			}
+			return false;
 		}
 	}
 }

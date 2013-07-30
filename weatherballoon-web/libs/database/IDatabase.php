@@ -30,12 +30,6 @@ interface IDatabase {
 	public function getResult($constant);
 	
 	/**
-	 * 
-	 * @param multitype $params
-	 */
-	public function bind($params);
-	
-	/**
 	 * Execute the query.
 	 * @param string $stmt
 	 * @param multitype $params

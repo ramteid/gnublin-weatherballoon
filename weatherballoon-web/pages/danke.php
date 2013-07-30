@@ -1,11 +1,3 @@
-<?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-include "globals.inc.php";
-include PATH_TEMPLATE . "/head.inc.html";
-require_once PATH_LIB . "/database/MySQLDatabaseConnection.class.php";
-$db = new MySQLDatabaseConnection(DB_DNS, DB_USER, DB_PASSWORD);
-?>
 <div class="container">
 	<div class="hero-unit">
 		<h1>Danke!</h1>
@@ -24,8 +16,9 @@ $db = new MySQLDatabaseConnection(DB_DNS, DB_USER, DB_PASSWORD);
 				$db->query("SELECT * FROM sponsors", array());
 				foreach ($db->getResult(PDO::FETCH_ASSOC) as $row) {
 					echo "<tr>";
-					echo "	<td>" . $row["name"] . "</td>";
-					echo "	<td>" . $row["thanks"] . "</td>";
+					echo "	<td>" . utf8_encode($row["name"]) . "</td>";
+					echo "	<td>" . utf8_encode($row["thanks"]) . "</td>";
+					echo "	<td><a href='" . $row["link"] . "' target='_blank'>" . $row["link"] . "</a></td>";
 					echo "</tr>";
 				}
 				$db->close();
@@ -36,6 +29,3 @@ $db = new MySQLDatabaseConnection(DB_DNS, DB_USER, DB_PASSWORD);
 		</tbody>
 	</table>
 </div>
-<?php 
-include PATH_TEMPLATE . "/foot.inc.html";
-?>

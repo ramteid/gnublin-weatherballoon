@@ -1,0 +1,33 @@
+AuthName "Bildergalerie Gasthaus Rose"
+AuthType Basic
+AuthUserFile /home/strato/http/power/rid/90/67/53679067/htdocs/galerie/.htpasswd
+
+
+<Files "createAlbum.php">
+	require valid-user
+</Files>
+
+<Files "deleteAlbum.php">
+	require valid-user
+</Files>
+
+<Files "deleteImage.php">
+	require valid-user
+</Files>
+
+<Files "index.php">
+	require valid-user
+</Files>
+
+<Files "process.php">
+	require valid-user
+</Files>
+
+<Files "upload.php">
+	require valid-user
+</Files>
+
+<Files "menu.php">
+	require valid-user
+</Files>
+

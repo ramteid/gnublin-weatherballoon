@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gpx version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+ <metadata>
+  <time>2013-07-25T10:54:47.000Z</time>
+ </metadata>
+ <trk>
+  <trkseg>
+   <trkpt lat="48.3568" lon="10.9245">
+    <ele>176</ele>
+    <time>2013-08-02T07:59:59.000Z</time>
+    <temperature>10.05</temperature>
+   </trkpt>
+   <trkpt lat="49.3568" lon="11.9245">
+    <ele>276</ele>
+    <time>2013-08-02T08:59:59.000Z</time>
+    <temperature>20.05</temperature>
+   </trkpt>
+   <trkpt lat="50.3568" lon="12.9245">
+    <ele>376</ele>
+    <time>2013-08-02T11:59:59.000Z</time>
+    <temperature>30.05</temperature>
+   </trkpt>
+  </trkseg>
+ </trk>
+</gpx>

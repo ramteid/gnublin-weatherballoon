@@ -1,11 +1,7 @@
-<?php
-include "globals.inc.php";
-include PATH_TEMPLATE . "/head.inc.html";
-?>
 <div class="container">
 	<div class="hero-unit balloons">
-		<h1>gnublin weatherballoon</h1>
-		<p>A meteorological balloon / weather balloon based on the Gnublin platform / Ein Wetterballon basierend auf der Gnublin-Plattform</p>
+		<h1>Gnublin Wetterballon</h1>
+		<p>Ein Wetterballon basierend auf der Gnublin-Plattform</p>
 	</div>
 	<div class="row">
 		<div class="span4">
@@ -70,10 +66,7 @@ include PATH_TEMPLATE . "/head.inc.html";
 	<div class="row">
 		<div class="span12">
 			<h2>Mehr...</h2>
-			<p>... Informationen finden Sie in unserem <a href="https://github.com/ramteid/gnublin-weatherballoon/blob/master/Protokoll%20zum%20Projekt.pdf?raw=true">Protokoll zum Projekt</a>. Den Programmcode und die Dokumentation k&ouml;nen Sie im <a href="https://github.com/ramteid/gnublin-weatherballoon" target="_blank">Git-Repository</a> finden.</p>
+			<p>... Informationen finden Sie in unserem <a href="https://github.com/ramteid/gnublin-weatherballoon/blob/master/Protokoll%20zum%20Projekt.pdf?raw=true">Protokoll zum Projekt</a>. Den Programmcode und die Dokumentation k&ouml;nnen Sie auf <a href="https://github.com/ramteid/gnublin-weatherballoon" target="_blank">github.com</a> finden.</p>
 		</div>
 	</div>
 </div>
-<?php
-include PATH_TEMPLATE . "/foot.inc.html";
-?>

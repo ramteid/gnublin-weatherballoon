@@ -6,6 +6,10 @@ body {
 	height: 100%;
 }
 
+#content {
+	margin-top: 60px;
+}
+
 #login-form .text {
 	margin-bottom: 15px;
 }
@@ -27,7 +31,6 @@ body {
 }
 
 .hero-unit {
-	margin-top: 15px;
 	z-index: 10;
 }
 
@@ -43,4 +46,13 @@ body {
 
 h1 {
 	padding-bottom: 10px;
+}
+
+.alert {
+	margin-top: 5px;
+}
+
+.map_container {
+	margin-top: 45px;
+	width: 1025px;
 }
