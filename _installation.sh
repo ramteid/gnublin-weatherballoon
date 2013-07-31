@@ -29,6 +29,7 @@ rm listener_start.pyc
 rm temperature.pyc
 rm gpsParser.pyc
 mkdir /root/pictures
+mkdir /root/logs
 
 # compile the c/c++ files
 gcc wdt_starter.c -o wdt_starter -I /usr/include/python2.6 -l python2.6

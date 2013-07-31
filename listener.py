@@ -103,7 +103,7 @@ class Listener(object):
 	# parameter must be a string
 	def logCoords(self, coords):
 		try:
-			with open("/root/coordinates.log", "a") as myfile:
+			with open("/root/logs/coordinates.log", "a") as myfile:
 				s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 				s += "	" + coords + "\n"
 				myfile.write(s)
@@ -116,7 +116,7 @@ class Listener(object):
 	# first parameter must be something convertable to s, second parameter must be a string
 	def logMessage(self, message, origin):
 		try:
-			with open("/root/messages.log", "a") as myfile:
+			with open("/root/logs/messages.log", "a") as myfile:
 				s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 				s += "	" + str(origin) + "		" + str(message) + "\n"
 				myfile.write(s)
@@ -128,7 +128,7 @@ class Listener(object):
 	# first parameter must be something convertable to s, second parameter must be a string
 	def logTemperature(self, message, origin):
 		try:
-			with open("/root/temperatures.log", "a") as myfile:
+			with open("/root/logs/temperatures.log", "a") as myfile:
 				s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 				s += "	" + str(origin) + "		" + str(message) + "\n"
 				myfile.write(s)
@@ -213,7 +213,7 @@ class Listener(object):
 	def getNetworkInfo(self):
 		# Reads network information from phone
 		try:
-			self.netinfo = self.sm.GetNetworkInfo()
+			self.netinfo = self.sm.GetNetworkInfo()		# 'State': 'NoNetwork' = no signal
 			signalQuality = self.sm.GetSignalQuality()
 			s = "Signal: " + signalQuality['SignalPercent'] + "% \n"
 			
@@ -247,6 +247,7 @@ class Listener(object):
 			self.logMessage(e, "takePictures-interval")
 			interval = self.pictureInterval
 			
+		# continue with file numbers
 		try:
 			if len(os.listdir(self.pictureDir)) > 0:
 				# get largest file number
