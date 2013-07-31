@@ -37,7 +37,7 @@ class Listener(object):
 		except Exception as e:
 			# Unplugging the UMTS stick requires a restart
 			print e
-			self.logMessage(e, "main")
+			self.logMessage(e, "__init__")
 			print "restarting in 300 sec..."
 			time.sleep(300)
 			os.system("reboot")
@@ -272,14 +272,12 @@ class Listener(object):
 			else:
 				index = 0
 			
-			# load video module
-			os.system("modprobe uvcvideo")
 			# capture pictures
 			while (myThreadLockNumber == self.threadLockNumberPictures):
 				filename = "{0}/{1}.jpg".format(self.pictureDir, index)
-				command = "uvccapture -o{0} -m -x640 -y480".format(filename)
+				command = "uvccapture -o{0} -m -x640 -y480 2> /dev/null".format(filename)
 				print "capture picture " + str(index)
-				os.system(s)
+				os.system(command)
 				if os.path.exists(filename):
 					index += 1
 				time.sleep(interval)
@@ -306,10 +304,10 @@ class Listener(object):
 			interval = self.temperatureInterval
 		try:
 			while (myThreadLockNumber == self.threadLockNumberTemperature):
-				celsius = self.temperature.calculateTemperature(3)
+				celsius = self.temperature.calculateTemperature()
 				fahrenheit = celsius * 33.8
 				tempString = "{0} Celsius / {1} Fahrenheit".format(celsius, fahrenheit)
-				logTemperature(tempString, "calculateTemperatureStart")
+				self.logTemperature(tempString, "calculateTemperatureStart")
 				if self.sendTemperature:
 					self.sendSMS(tempString)
 				time.sleep(interval)
@@ -410,7 +408,7 @@ class Listener(object):
 					thread.start_new_thread( self.logGPScoordinates, (newThreadLockNumber, cmd[11:]) )
 					print "thread gestartet: " + str(newThreadLockNumber)
 				
-				else
+				else:
 					print "command not recognized"
 					self.logMessage("unknown command: " + cmd, "processCommands")
 				

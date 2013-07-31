@@ -1,10 +1,10 @@
-#! /bin/sh
+#! /bin/bash
 ### BEGIN INIT INFO
 # Provides:          local.autostart
-# Required-Starting:    $start
-# Required-Stopping:     $shutdown
-# Default-Starting:     2 3 4 5
-# Default-Stopping:      0 1 6
+# Required-Start:    $start
+# Required-Stop:     $shutdown
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
 # Short-Description: Starting all important project apps
 # Description:       Starting all important project apps like WDT, temperature logger, command listener
 ### END INIT INFO
@@ -15,6 +15,12 @@
 case "$1" in
   start)
   
+	# load video module
+	modprobe uvcvideo
+	
+	# load gps receiver module
+	modprobe cdc_acm
+	
 	echo "Kill all active project processes"
 	pkill -9 -f wdt_starter
 	pkill -9 -f listener_start.py

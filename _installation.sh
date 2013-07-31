@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 # place this script and all the other scripts and files in /root/
 # run this script with root privileges
 
@@ -32,10 +32,12 @@ mkdir /root/pictures
 
 # compile the c files
 gcc wdt_starter.c -o wdt_starter -I /usr/include/python2.6 -l python2.6
-gcc temperature.c -o temperature
+gcc temperature.c -o temperature -lm
+gcc impulse.cpp -o impulse
 
 chmod 7777 wdt_starter
 chmod 7777 temperature
+chmod 7777 impulse
 
 # assign runlevel
 update-rc.d local.autostart defaults
