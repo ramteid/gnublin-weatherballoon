@@ -5,7 +5,7 @@ A meteorological balloon / weather balloon based on the Gnublin platform / Ein W
 
 ======================
 
-installing gnublin:
+installing gnublin to sd card:
 
 git clone https://github.com/embeddedprojects/gnublin-distribution.git 
 
@@ -17,7 +17,7 @@ copy everything to SD-Card with Gnublin Installer: http://wiki.gnublin.org/index
 
 ======================
 
-kernel menuconfig options for making the UMTS-stick work:
+kernel menuconfig options for making the MF190 UMTS-stick work:
 
 Device Drivers->USB Support->USB Serial Converter Support->USB driver for GSM and CDMA modems (Module option)
 
@@ -27,7 +27,7 @@ Device Drivers->Networking Device Support->PPP Support (Module ppp_generic and o
 
 required packages:
 
-gammu python-dev usb-modeswitch ppp gpsd gpsd-clients
+python-dev usb-modeswitch ppp gpsd gpsd-clients gammu python-gammu
 
 probably useful packets:
 

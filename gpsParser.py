@@ -10,9 +10,6 @@ import operator
 class GpsParser(object):
 
 	def __init__(self):
-		# load gps receiver module
-		os.system("modprobe cdc_acm")
-	
 		# initialize dicts for NMEA recods
 		self.GPVTG = {}
 		self.GPRMC = {} # provides time, date
@@ -31,7 +28,8 @@ class GpsParser(object):
 			# Read for some seconds from the NMEA-GPS-device and store the result into stdout. Should be 6 seconds to get all kinds of records
 			(stdout, stderr) = Popen(["timeout", str(timeout), "cat", "/dev/ttyACM0"], stdout=PIPE).communicate()
 			# split by lines and put latest line at the top of the list
-			lines = stdout.split("\r\n").reverse()
+			lines = stdout.split("\n\n")
+			lines.reverse()
 			return lines
 		except Exception as e:
 			print e
@@ -62,13 +60,25 @@ class GpsParser(object):
 			print "$GPGGA"
 			print e
 			return "-"
-					
-			
+		
+		
+	# expects a NMEA sentence, e.g. $GPRMC,,,....
+	def checksum(self, sentence):
+		try:
+			sentence = sentence.strip('$').strip('\n\n')
+			nmeadata,cksum = sentence.split('*', 1)
+			calc_cksum = reduce(operator.xor, (ord(s) for s in nmeadata), 0)
+			return int(cksum,16) == calc_cksum
+		except Exception as e:
+			print e
+			return False
+		
+		
 	# needs result from readGpsData()
 	def parseAndSetDateTime(self, gpsData):
 		try:
 			for line in gpsData:
-				if checksum(line):				# set date only if the checksum is correct			
+				if self.checksum(line):				# set date only if the checksum is correct			
 					message = line[0:6]			# message, e.g. $GPRMC
 					if message == "$GPRMC":
 						fields = line.split(",")
@@ -86,7 +96,10 @@ class GpsParser(object):
 						s = 'date -s "{0}-{1}-{2} {3}:{4}:{5}"'.format(year, month, day, hour, min, sec)
 						os.system(s)
 						return True
-						
+				else:
+					print "parseAndSetDateTime"
+					print "checksum did not match"
+				
 		except Exception as e:
 			print "parseAndSetDateTime"
 			print e
@@ -170,17 +183,7 @@ class GpsParser(object):
 		return self.GPVTG, self.GPRMC, self.GPGSA, self.GPGGA, self.GPGSV
 	
 	
-	# expects a NMEA sentence, e.g. $GPRMC,,,....
-	def checksum(self, sentence):
-		try:
-			sentence = sentence.strip('$').strip('\r\n')
-			nmeadata,cksum = sentence.split('*', 1)
-			calc_cksum = reduce(operator.xor, (ord(s) for s in nmeadata), 0)
-			return int(cksum,16) == calc_cksum
-		except Exception as e:
-			print e
-			return False
-		
+
 		
 		
 		

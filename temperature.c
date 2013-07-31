@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-const int MAX_BUFFER = 255
+const int MAX_BUFFER = 255;
 
 /*
 Calculates the resistence dependent on temperature
@@ -18,7 +18,7 @@ float calculateResistence()
         return -1;
     }
 	float V;
-    char buffer[MAX_BUFFER]
+    char buffer[MAX_BUFFER];
     fgets(buffer, MAX_BUFFER, fp);
     pclose(fp);
 	V = atoi(buffer) / 1000.0;
@@ -37,5 +37,5 @@ temperature = ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
 float calculateTemperature()
 {
     float R = calculateResistence();
-    return (sqrt(15.274808890000001 + (0.00231 * (1000 - R))) - 3.9083) / -0.001155
+    return (sqrt(15.274808890000001 + (0.00231 * (1000 - R))) - 3.9083) / -0.001155;
 }
