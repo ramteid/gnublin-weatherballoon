@@ -32,10 +32,19 @@ mkdir /root/pictures
 
 # compile the c files
 gcc wdt_starter.c -o wdt_starter -I /usr/include/python2.6 -l python2.6
-gcc temperature.c -o temperature
+
+# create temperature library
+gcc -fPIC -Wall -g -c temperature.c
+gcc -ggdb3 -shared -Wl,-soname,temperature.so.1 -o temperature.so.1.0 temperature.o -lc
+
+export LD_LIBRARY_PATH=/usr/local/lib
+
+mv temperature.so.1.0 ~/usr/local/lib
+cd ~/usr/local/lib
+ln -fs temperature.so.1.0 temperature.so.1
+ln -fs temperature.so.1 temperature.so
 
 chmod 7777 wdt_starter
-chmod 7777 temperature
 
 # assign runlevel
 update-rc.d local.autostart defaults

@@ -39,18 +39,3 @@ float calculateTemperature()
     float R = calculateResistence();
     return (sqrt(15.274808890000001 + (0.00231 * (1000 - R))) - 3.9083) / -0.001155
 }
-
-/*
-Returns the average temperature of a given amount of temperatures
-*/
-int main(int amountOfTemperatures)
-{
-    int count = 0;
-    int temp = 0;
-    while (count != amountOfTemperatures)
-    {
-        temp += calculateTemperature();
-        count++;
-    }
-    return temp / amountOfTemperatures;
-}

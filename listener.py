@@ -8,8 +8,8 @@ import sys
 import time
 import os
 import random
-from temperature import Temperature
 from gpsParser import GpsParser
+from ctypes import CDLL, c_float
 
 class Listener(object):
 
@@ -297,6 +297,8 @@ class Listener(object):
 
 		
 	def calculateTemperatureStart(self, myThreadLockNumber, seconds):
+		tempLib = CDLL("temperature.so")
+		tempLib.calculateTemperature.restype = c_float
 		interval = self.temperatureInterval
 		try:
 			interval = int(seconds)
@@ -306,7 +308,7 @@ class Listener(object):
 			interval = self.temperatureInterval
 		try:
 			while (myThreadLockNumber == self.threadLockNumberTemperature):
-				celsius = self.temperature.calculateTemperature(3)
+				celsius = tempLib.calculateTemperature()
 				fahrenheit = celsius * 33.8
 				tempString = "{0} Celsius / {1} Fahrenheit".format(celsius, fahrenheit)
 				logTemperature(tempString, "calculateTemperatureStart")
