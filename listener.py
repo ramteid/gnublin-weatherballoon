@@ -306,11 +306,7 @@ class Listener(object):
 			interval = self.temperatureInterval
 		try:
 			while (myThreadLockNumber == self.threadLockNumberTemperature):
-<<<<<<< HEAD
 				celsius = tempLib.calculateTemperature()
-=======
-				celsius = self.temperature.calculateTemperature()
->>>>>>> c412f21f569979a58856e8e60314f3cd9ed06f87
 				fahrenheit = celsius * 33.8
 				tempString = "{0} Celsius / {1} Fahrenheit".format(celsius, fahrenheit)
 				self.logTemperature(tempString, "calculateTemperatureStart")

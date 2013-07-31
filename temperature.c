@@ -27,7 +27,7 @@ float calculateResistence()
 
 /*
 Calculate the temperature with the help of
-platinum temperature coefficients
+platinum temperature coefficients and returns the average of three temperatures
 DIN EN 60751 / IEC 60751
 A = 3.9083E-3
 B = -5.775E-7
@@ -36,6 +36,11 @@ temperature = ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
 */
 float calculateTemperature()
 {
-    float R = calculateResistence();
-    return (sqrt(15.274808890000001 + (0.00231 * (1000 - R))) - 3.9083) / -0.001155;
+    float R;
+	float temp = 0.0;
+	for (i = 0; i <= 3; i++) {
+		R = calculateTemperature();
+		temp += (sqrt(15.274808890000001 + (0.00231 * (1000 - R))) - 3.9083) / -0.001155;
+	}
+	return temp / 3.0;
 }
