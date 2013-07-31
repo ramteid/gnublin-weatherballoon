@@ -32,3 +32,8 @@ python-dev usb-modeswitch ppp gpsd gpsd-clients gammu python-gammu
 probably useful packets:
 
 dos2unix gcc g++ python-gps
+
+======================
+
+instead of using the provided .gammurc which specifies the UMTS-stick port, you can use gammu-config
+

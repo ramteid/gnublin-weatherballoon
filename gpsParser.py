@@ -48,8 +48,8 @@ class GpsParser(object):
 						return "-"
 						
 					latitude = float(fields[2][0:2]) + ( float(fields[2][2:]) / 60.0 )
-					longitude = float(fields[4][0:2]) + ( float(fields[4][2:]) / 60.0 )
-					height_over_msl = fields[9] # height over geoid or mean sea level (schwabencenter 261m) (Meter)
+					longitude = float(fields[4][1:3]) + ( float(fields[4][3:]) / 60.0 ) # field for longitude has one more heading zero
+					height_over_msl = fields[9] # height over geoid or mean sea level (Meter)
 					geoidal_separation = fields[11] # distance between the geoid and ellipsoid (Meter)
 					height = height_over_msl
 					
@@ -60,25 +60,13 @@ class GpsParser(object):
 			print "$GPGGA"
 			print e
 			return "-"
-		
-		
-	# expects a NMEA sentence, e.g. $GPRMC,,,....
-	def checksum(self, sentence):
-		try:
-			sentence = sentence.strip('$').strip('\n\n')
-			nmeadata,cksum = sentence.split('*', 1)
-			calc_cksum = reduce(operator.xor, (ord(s) for s in nmeadata), 0)
-			return int(cksum,16) == calc_cksum
-		except Exception as e:
-			print e
-			return False
-		
+
 		
 	# needs result from readGpsData()
 	def parseAndSetDateTime(self, gpsData):
 		try:
 			for line in gpsData:
-				if self.checksum(line):				# set date only if the checksum is correct			
+				if self.checksum(line):			# set date only if the checksum is correct			
 					message = line[0:6]			# message, e.g. $GPRMC
 					if message == "$GPRMC":
 						fields = line.split(",")
@@ -90,10 +78,11 @@ class GpsParser(object):
 						hour = fields[1][0:2]
 						min = fields[1][2:4]
 						sec = fields[1][4:6]
-						year = fields[9][0:2]
+						day = fields[9][0:2]
 						month = fields[9][2:4]
-						day = fields[9][4:6]
+						year = fields[9][4:6]
 						s = 'date -s "{0}-{1}-{2} {3}:{4}:{5}"'.format(year, month, day, hour, min, sec)
+						print "setting date: " + s
 						os.system(s)
 						return True
 				else:
@@ -115,12 +104,12 @@ class GpsParser(object):
 			except Exception as e:
 				continue
 			
-			if lmessage == "$GPVTG" and not self.GPVTG:
+			if message == "$GPVTG" and not self.GPVTG:
 				try:
 					fields = line.split(",")
 					self.GPVTG['course'] = fields[1] # measured course in degrees
 					self.GPVTG['speed'] = fields[7] # horizontal speed in km/h
-					self.GPVTG['mode'] = fields[9] # A=Autonomous, D=Differential, E=Estimated mode
+					self.GPVTG['mode'] = fields[9][0] # A=Autonomous, D=Differential, E=Estimated mode
 				except Exception as e:
 					self.GPVTG = {}
 					print "$GPVTG"
@@ -129,20 +118,19 @@ class GpsParser(object):
 			elif message == "$GPRMC" and not self.GPRMC:
 				try:
 					fields = line.split(",")
-					self.GPRMC['status'] = fields[2]		# A=ok, V=warning
+					self.GPRMC['status'] = fields[2]		# A=data valid, V=warning
 					self.GPRMC['latitude'] = float(fields[3][0:2]) + ( float(fields[3][2:]) / 60.0 )
 					self.GPRMC['direction_lat'] = fields[4] # N/S
-					self.GPRMC['longitude'] = float(fields[5][0:2]) + ( float(fields[5][2:]) / 60.0 )
+					self.GPRMC['longitude'] = float(fields[5][1:3]) + ( float(fields[5][3:]) / 60.0 ) # field for longitude has one more heading zero
 					self.GPRMC['direction_lon'] = fields[6] # E/W
 					self.GPRMC['speed_over_ground'] = float(fields[7])*1.852 # knots->km/h
 					self.GPRMC['course_over_ground'] = fields[8] # in terms of geographic north
-					self.GPRMC['signal_integrity'] = fields[12] # N=bad, empty=good
 				except Exception as e:
 					self.GPRMC = {}
 					print "$GPRMC"
 					print e
 				
-			elif lmessage == "$GPGSA" and not self.GPGSA:
+			elif message == "$GPGSA" and not self.GPGSA:
 				try:
 					fields = line.split(",")
 					self.GPGSA['fix_type'] = fields[2] # 1=no fix, 2=2D-fix (<4 satellites in view), 3=3D-fix (>=4 satellites in view)
@@ -154,13 +142,13 @@ class GpsParser(object):
 			elif message == "$GPGGA" and not self.GPGGA:
 				try:
 					fields = line.split(",")
-					self.GPRMC['latitude'] = float(fields[2][0:2]) + ( float(fields[2][2:]) / 60.0 )
-					self.GPRMC['direction_lat'] = fields[3] # N/S
-					self.GPRMC['longitude'] = float(fields[4][0:2]) + ( float(fields[4][2:]) / 60.0 )
-					self.GPRMC['direction_lon'] = fields[5] # E/W
+					self.GPGGA['latitude'] = float(fields[2][0:2]) + ( float(fields[2][2:]) / 60.0 )
+					self.GPGGA['direction_lat'] = fields[3] # N/S
+					self.GPGGA['longitude'] = float(fields[4][1:3]) + ( float(fields[4][3:]) / 60.0 ) # field for longitude has one more heading zero
+					self.GPGGA['direction_lon'] = fields[5] # E/W
 					self.GPGGA['gps_quality'] = fields[6] # 0: no fix, 1: gps fix, 2: differential gps fix
 					self.GPGGA['satellites_used'] = fields[7]
-					self.GPGGA['height_over_msl'] = fields[9] # height over geoid or mean sea level (schwabencenter 261m) (Meter)
+					self.GPGGA['height_over_msl'] = fields[9] # height over geoid or mean sea level (Meter)
 					self.GPGGA['geoidal_separation'] = fields[11] # distance between the geoid and ellipsoid (Meter)
 				except Exception as e:
 					self.GPGGA = {}
@@ -183,7 +171,16 @@ class GpsParser(object):
 		return self.GPVTG, self.GPRMC, self.GPGSA, self.GPGGA, self.GPGSV
 	
 	
-
+	# expects a NMEA sentence, e.g. $GPRMC,,,....
+	def checksum(self, sentence):
+		try:
+			sentence = sentence.strip('$').strip('\n\n')
+			nmeadata,cksum = sentence.split('*', 1)
+			calc_cksum = reduce(operator.xor, (ord(s) for s in nmeadata), 0)
+			return int(cksum,16) == calc_cksum
+		except Exception as e:
+			print e
+			return False
 		
 		
 		
