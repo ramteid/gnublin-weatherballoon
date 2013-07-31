@@ -36,7 +36,7 @@ temperature = ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
 */
 float calculateTemperature()
 {
-    float R;
+	float R;
 	float temp = 0.0;
 	for (i = 0; i <= 3; i++) {
 		R = calculateTemperature();
