@@ -7,7 +7,7 @@ int main()
 	if (system(NULL)) {
 		while (1) {
 			system("gnublin-gpio -p 11 -o 1");
-			sleep(2);
+			sleep(1);
 			system("gnublin-gpio -p 11 -o 0");
 			sleep(10);
 		}
