@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-inc main()
+int main()
 {
 	if (system(NULL)) {
 		while (1) {
