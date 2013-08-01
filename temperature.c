@@ -37,5 +37,5 @@ temperature = ((-A*R0)+(sqrt(((A*R0)*(A*R0))-(4*B*R0*(R0-R)))))/(2*B*R0)
 float calculateTemperature()
 {
 	float R = calculateResistence();
-	return (sqrt(15.274808890000001 + (0.00231 * (1000 - R))) - 3.9083) / -0.001155;
+	return (sqrt(15.274808890000001 + (0.00231 * (1000 - R))) - 3.9083) / -0.001155 - 1.5;
 }
