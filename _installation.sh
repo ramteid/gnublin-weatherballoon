@@ -31,9 +31,9 @@ rm gpsParser.pyc
 mkdir /root/pictures
 mkdir /root/logs
 
-# compile the c/c++ files
+# compile the c files
 gcc wdt_starter.c -o wdt_starter -I /usr/include/python2.6 -l python2.6
-g++ impulse.cpp -o impulse
+gcc impulse.c -o impulse
 
 # create dynamic temperature library
 gcc -fPIC -Wall -g -c temperature.c

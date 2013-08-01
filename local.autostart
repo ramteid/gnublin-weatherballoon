@@ -24,6 +24,7 @@ case "$1" in
 	echo "Kill all active project processes"
 	pkill -9 -f wdt_starter
 	pkill -9 -f listener_start.py
+	pkill -9 -f impulse
 	
 	echo "Starting internal watchdog timer"
 	/root/wdt_starter > /dev/null &
@@ -35,7 +36,7 @@ case "$1" in
 	/root/script_watcher.sh &
 
 	echo "Starting to send an impulse every 10 seconds"
-	/root/impulse.sh &
+	/root/impulse > /dev/null &
 	
 	;;
 
@@ -47,6 +48,8 @@ case "$1" in
 	echo "Stopping command listener"
 	pkill -9 -f listener_start.py
 	
+	echo "Stopping impulse"
+	pkill -9 -f impulse
 	;;
 esac
 
