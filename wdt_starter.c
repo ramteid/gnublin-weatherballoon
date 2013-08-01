@@ -7,7 +7,7 @@
 #include <linux/watchdog.h>
 #include <Python.h>
 
-// Exit the program if an occur
+// Exit the program if an error occur
 void onErrorExitWDT(char *msg)
 {
 	perror(msg);

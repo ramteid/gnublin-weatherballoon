@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Set the GPIO 11 all 10 seconds to HIGH
 int main()
 {
 	if (system(NULL)) {
