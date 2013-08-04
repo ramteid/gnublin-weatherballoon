@@ -38,8 +38,8 @@ gcc -ggdb3 -shared -Wl,-soname,temperature.so.1 -o temperature.so.1.0 temperatur
 
 export LD_LIBRARY_PATH=/usr/local/lib
 
-mv temperature.so.1.0 ~/usr/local/lib
-cd ~/usr/local/lib
+mv temperature.so.1.0 /usr/local/lib
+cd /usr/local/lib
 ln -fs temperature.so.1.0 temperature.so.1
 ln -fs temperature.so.1 temperature.so
 
