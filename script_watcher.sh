@@ -32,7 +32,7 @@ do
 	sleep 300
 	
 	# p1 = search pattern, p2 = command to run script
-	fnCheckIfRunning "[l]istener_start.py" "python /root/listener.py"
+	fnCheckIfRunning "[l]istener_start.py" "python /root/listener_start.py"
 	fnCheckIfRunning "[w]dt_starter" "/root/wdt_starter"
 	
 done

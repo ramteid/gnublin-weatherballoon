@@ -10,6 +10,7 @@ dos2unix gpsParser.py
 dos2unix script_watcher.sh
 dos2unix wdt_starter.c
 dos2unix temperature.c
+dos2unix temperature.py
 dos2unix impulse.c
 
 cp local.autostart /etc/init.d/local.autostart
@@ -19,6 +20,7 @@ chmod 7777 /etc/init.d/local.autostart
 chmod 7777 listener.py
 chmod 7777 listener_start.py
 chmod 7777 gpsParser.py
+chmod 7777 temperature.py
 
 chmod 7777 script_watcher.sh
 
@@ -38,13 +40,10 @@ gcc -ggdb3 -shared -Wl,-soname,temperature.so.1 -o temperature.so.1.0 temperatur
 
 export LD_LIBRARY_PATH=/usr/local/lib
 
-mv temperature.so.1.0 /usr/local/lib
-cd /usr/local/lib
-ln -fs temperature.so.1.0 temperature.so.1
-ln -fs temperature.so.1 temperature.so
+cp temperature.so.1.0 /usr/local/lib/temperature.so.1.0
+cp temperature.so.1.0 /usr/local/lib/temperature.so.1
+cp temperature.so.1.0 /usr/local/lib/temperature.so
 
-chmod 7777 wdt_starter
-chmod 7777 impulse
 
 # assign runlevel
 update-rc.d local.autostart defaults

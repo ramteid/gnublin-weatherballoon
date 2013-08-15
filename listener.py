@@ -8,12 +8,15 @@ import sys
 import time
 import os
 import random
+from temperature import Temperature
+from subprocess import Popen, PIPE
 from gpsParser import GpsParser
 from ctypes import CDLL, c_float
 
 class Listener(object):
 
 	def __init__(self):
+		self.number = '+4917621929963'
 		self.pictureInterval = 20
 		self.temperatureInterval = 60
 		self.smsListeningInterval = 10
@@ -21,11 +24,13 @@ class Listener(object):
 		self.threadLockNumberReports = 0
 		self.threadLockNumberPictures = 0
 		self.threadLockNumberTemperature = 0
+		self.threadLockNumberGpsTime = 0
 		self.sendGPSSMS = False
 		self.pictureDir = "/root/pictures"
 		self.sendTemperature = False
-		self.temperature = Temperature()
-		self.gpsParser = GpsParser() # also sets the date/time via gps
+		self.getTimeFromGpsLoop = True
+		self.gpsParser = GpsParser()
+		self.temperatureClass = Temperature()
 		
 		try:
 			# Create state machine object
@@ -38,22 +43,23 @@ class Listener(object):
 			# Unplugging the UMTS stick requires a restart
 			print e
 			self.logMessage(e, "__init__")
-			print "restarting in 300 sec..."
-			time.sleep(300)
-			os.system("reboot")
+			if e.Code == 4:
+				print "restarting in 300 sec..."
+				time.sleep(300)
+				os.system("reboot")
 
 
 	def sendSMS(self, text):
 		try:
-			number = '+4917621929963'
 			message = {
 				'Text': text, 
 				'SMSC': {'Location': 1},
-				'Number': number,
+				'Number': self.number,
 			}
 			self.sm.SendSMS(message)
 
 		except Exception as e:
+			print "sendSMS"
 			print e
 			self.logMessage(e, "sendSMS")
 			
@@ -96,10 +102,40 @@ class Listener(object):
 				self.sm.DeleteSMS(Folder = folder, Location = location)
 				
 			except Exception as e:
+				print "deleteReadSMS"
 				print e
 				self.logMessage(e, "deleteReadSMS")
 
 
+	# parameter must be a string
+	def logAllRecords(self, temperatureExternal, temperatureInternal, gpsInfo, coords, height, networkInfo):
+		try:
+			with open("/root/logs/allRecords.log", "a") as myfile:
+				s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+				s += "	" + temperatureExternal + "\n"
+				s += "	" + temperatureInternal + "\n"
+				s += "	" + str(gpsInfo) + "\n"
+				s += "	" + coords + "\n"
+				s += "	" + height + "\n"
+				s += "	" + str(networkInfo) + "\n\n"
+				
+				print ""
+				print temperatureExternal
+				print temperatureInternal
+				print str(gpsInfo)
+				print coords
+				print height
+				print str(networkInfo)
+				print ""
+				
+				myfile.write(s)
+
+		except Exception as e:
+			print "logAllRecords"
+			print e
+			self.logMessage(e, "logAllRecords")
+			
+			
 	# parameter must be a string
 	def logCoords(self, coords):
 		try:
@@ -109,6 +145,7 @@ class Listener(object):
 				myfile.write(s)
 
 		except Exception as e:
+			print "logCoords"
 			print e
 			self.logMessage(e, "logCoords")
 
@@ -134,40 +171,27 @@ class Listener(object):
 				myfile.write(s)
 
 		except Exception as e:
+			print "logTemperature"
 			print e
 			self.logMessage(e, "logCoords")
 			
 	
-	# get gps coordinates on demand
-	def getGPScoordinates(self):
-		try:
-			coords, height = self.gpsParser.getGpsCoordinates()
-			if coords == "-":
-				raise Exception("coordinates invalid: -")
-				
-			self.sendSMS(coords + ": " + height + "m\n" + "http://maps.google.de/maps?q=" + coords)
-				
-		except Exception as e:
-			print e
-			self.logMessage(e, "getGPScoordinates")
-			
-			
 	# thread that loops and logs/sends gps coordinates
 	def logGPScoordinates(self, myThreadLockNumber, seconds):
 		interval = self.gpsReportingInterval
 		try:
 			interval = int(seconds)
 		except Exception as e:
-			print e
+			#print "logGPScoordinates-listener"
+			#print e
 			self.logMessage(e, "logGPScoordinates-interval")
 			interval = self.gpsReportingInterval
 			
 		# to avoid multiple threads, there'a lock number
 		while (myThreadLockNumber == self.threadLockNumberReports):
 			try:
-				coords, height = self.gpsParser.getGpsCoordinates()
-				if coords == "-":
-					raise Exception("coordinates invalid: -")
+				lines = self.gpsParser.readGpsData(timeout=6)
+				coords, height = self.gpsParser.getGpsCoordinatesParser(lines, sendSMS=self.sendGPSSMS)
 					
 				self.logCoords(coords + ": " + height + "m")
 				
@@ -177,10 +201,65 @@ class Listener(object):
 				time.sleep(interval)
 				
 			except Exception as e:
+				print "logGPScoordinates-listener-loop"
 				print e
 				self.logMessage(e, "logGPScoordinates-report")
 
 
+	def initGetTimeFromGPS(self, interval):
+		newThreadLockNumber = random.randint(1,99999)
+		self.threadLockNumberGpsTime = newThreadLockNumber
+		thread.start_new_thread( self.getTimeFromGPS, (newThreadLockNumber, interval) )
+
+	# thread to get the gps timestamp and set the system clock 
+	def getTimeFromGPS(self, myThreadLockNumber, interval=300):
+		while self.getTimeFromGpsLoop and myThreadLockNumber == self.threadLockNumberGpsTime:
+			try:
+				# set the system date/time
+				gpsData = self.gpsParser.readGpsData(timeout=2)
+				success = self.gpsParser.parseAndSetDateTime(gpsData)
+				time.sleep(interval)
+			except Exception as e:
+				#print e
+				self.logMessage(e, "getTimeFromGPS")
+				time.sleep(interval)
+			
+
+	# parse various gps information from NMEA output
+	def getGpsInfo(self):
+		try:
+			gpsLines = self.gpsParser.readGpsData(timeout = 6)
+			gps_info = self.gpsParser.parseGpsData(gpsLines)
+			coords, height = self.getGPScoordinates(lines=gpsLines, sendSMS=False)
+			return gps_info, coords, height
+		except Exception as e:
+			print "getGpsInfo"
+			print e
+			self.logMessage(e, "parseGpsData")
+			return "-","-","-"
+			
+			
+	# get gps coordinates on demand
+	def getGPScoordinates(self, lines = [], sendSMS=False):
+		try:
+			if not lines:
+				lines = self.gpsParser.readGpsData(timeout=6)
+				
+			coords, height = self.gpsParser.getGpsCoordinatesParser(lines)
+			if coords == "-":
+				raise Exception("coordinates invalid: -")
+				
+			if sendSMS:
+				self.sendSMS(coords + ": " + height + "m\n" + "http://maps.google.de/maps?q=" + coords)
+			return coords, height
+				
+		except Exception as e:
+			#print "getGPScoordinates-listener"
+			#print e
+			self.logMessage(e, "getGPScoordinates")
+			return "-","-"
+			
+			
 	def setSystemTime(self, datetime):
 		#expects a string in format 20130717121400
 		try:
@@ -196,6 +275,7 @@ class Listener(object):
 			os.system("date")
 			
 		except Exception as e:
+			print "setSystemTime"
 			print e
 			self.logMessage(e, "setSystemTime")
 			
@@ -206,23 +286,28 @@ class Listener(object):
 			self.sendSMS(time)
 
 		except Exception as e:
+			print "getSystemTime"
 			print e
 			self.logMessage(e, "getSystemTime")
 			
 
-	def getNetworkInfo(self):
+	def getNetworkInfo(self, sendSMS=False):
 		# Reads network information from phone
 		try:
-			self.netinfo = self.sm.GetNetworkInfo()		# 'State': 'NoNetwork' = no signal
+			netinfo = self.sm.GetNetworkInfo()		# 'State': 'NoNetwork' = no signal
 			signalQuality = self.sm.GetSignalQuality()
-			s = "Signal: " + signalQuality['SignalPercent'] + "% \n"
 			
-			for key in netinfo:
-				s += key + ": " + netinfo[key] + "\n"
+			if sendSMS:
+				s = "Signal: " + signalQuality['SignalPercent'] + "% \n"
+				for key in netinfo:
+					s += key + ": " + netinfo[key] + "\n"
+				print s
+				self.sendSMS(s)
+				
+			return dict(netinfo, **signalQuality)
 			
-			print s
-			self.sendSMS(s)
 		except Exception as e:
+			print "getNetworkInfo"
 			print e
 			self.logMessage(e, "getNetworkInfo")
 
@@ -243,6 +328,7 @@ class Listener(object):
 		try:
 			interval = int(seconds)
 		except Exception as e:
+			print "takePicutes-upper"
 			print e
 			self.logMessage(e, "takePictures-interval")
 			interval = self.pictureInterval
@@ -267,6 +353,7 @@ class Listener(object):
 						index = numbers[0] + 1
 						
 					except Exception as e:
+						print "takePictures-inner"
 						print e
 						self.logMessage(e, "takePictures-filenames")
 						index = 0
@@ -284,41 +371,75 @@ class Listener(object):
 				time.sleep(interval)
 		
 		except Exception as e:
+				print "takePictures"
 				print e
-				self.logMessage(e, "takePictures")			
+				self.logMessage(e, "takePictures")	
+				time.sleep(60)		
 
-				
-	def initTemperature(self, seconds):
+	
+	# start thread for logging PT1000 temperature
+	def initLogTemperature(self, seconds):
 		newThreadLockNumber = random.randint(1, 99999)
 		self.threadLockNumberTemperature = newThreadLockNumber
-		thread.start_new_thread(self.calculateTemperatureStart, (newThreadLockNumber, seconds))
+		thread.start_new_thread(self.logTemperatureStart, (newThreadLockNumber, seconds))
 		print "thread gestartet: " + str(newThreadLockNumber)
 
-		
-	def calculateTemperatureStart(self, myThreadLockNumber, seconds):
-		tempLib = CDLL("temperature.so")
-		tempLib.calculateTemperature.restype = c_float
-		interval = self.temperatureInterval
+	
+	# thread for logging PT1000 temperature
+	def logTemperatureStart(self, myThreadLockNumber, seconds):
 		try:
+			tempLib = CDLL("/usr/local/lib/temperature.so")
+			tempLib.calculateTemperature.restype = c_float
+			interval = self.temperatureInterval
 			interval = int(seconds)
 		except Exception as e:
+			print "logTemperatureStart"
 			print e
-			self.logMessage(e, "calculateTemperatureStart-interval")
+			self.logMessage(e, "logTemperatureStart-init")
 			interval = self.temperatureInterval
 		try:
 			while (myThreadLockNumber == self.threadLockNumberTemperature):
 				celsius = tempLib.calculateTemperature()
 				fahrenheit = celsius * 33.8
 				tempString = "{0} Celsius / {1} Fahrenheit".format(celsius, fahrenheit)
-				self.logTemperature(tempString, "calculateTemperatureStart")
+				self.logTemperature(tempString, "logTemperatureStart")
 				if self.sendTemperature:
 					self.sendSMS(tempString)
 				time.sleep(interval)
 		
 		except Exception as e:
+			print "logTemperatureStart-loop"
 			print e
-			self.logMessage(e, "calculateTemperatureStart")
+			self.logMessage(e, "logTemperatureStart")
 
+
+	# return PT1000 temperature
+	def getTemperatureExternal(self):
+		try:
+			#tempLib = CDLL("/usr/local/lib/temperature.so")
+			#tempLib.calculateTemperature.restype = c_float
+			#celsius = tempLib.calculateTemperature()
+			#return str(celsius)
+			t = self.temperatureClass.calculateTemperature()
+			return str(t)
+		except Exception as e:
+			print "getTemperatureExternal"
+			print e
+			self.logMessage(e, "getTemperatureExtern")
+			return "-"
+	
+
+	# return Gnublin temperature module temperature
+	def getTemperatureInternal(self):
+		try:
+			(stdout, stderr) = Popen(["gnublin-lm75", "-b"], stdout=PIPE).communicate()
+			return stdout
+		except Exception as e:
+			print "getTemperatureInternal"
+			print e
+			self.logMessage(e, "getTemperatureIntern")
+			return "-"
+	
 
 	def processCommands(self, smslist):
 		for sms in smslist:
@@ -340,9 +461,15 @@ class Listener(object):
 				elif cmd == 'repgpsstop':
 					self.sendGPSSMS = False
 				
+				# stop setting time via gps
+				elif cmd == 'gpstimestop':
+					self.logMessage("cmd: " + cmd, "processCommands")
+					self.threadLockNumberGpsTime = 0
+					print "thread gestoppt"
+				
 				# get gps coordinates on demand
 				elif cmd == 'getgps':
-					self.getGPScoordinates()
+					self.getGPScoordinates(lines=[], sendSMS=True)
 				
 				# stop capturing images with camera
 				elif cmd == 'capstop':
@@ -374,7 +501,7 @@ class Listener(object):
 				# send network information via sms
 				elif cmd == 'getnetwork':
 					self.logMessage("cmd: " + cmd, "processCommands")
-					self.getNetworkInfo()
+					self.getNetworkInfo(sendSMS=True)
 					
 				# reboot system
 				elif cmd == 'restart_system' or cmd == 'reboot_system':
@@ -401,7 +528,7 @@ class Listener(object):
 				# start logging temperatures
 				elif cmd[0:9] == 'logtempstart':	#e.g. tempstart30
 					self.logMessage("cmd: " + cmd, "processCommands")
-					self.initTemperature(cmd[9:])
+					self.initLogTemperature(cmd[9:])
 					
 				# start logging gps coordinates
 				elif cmd[0:11] == 'loggpsstart':	#e.g. loggpsstart30
@@ -410,12 +537,23 @@ class Listener(object):
 					self.threadLockNumberReports = newThreadLockNumber
 					thread.start_new_thread( self.logGPScoordinates, (newThreadLockNumber, cmd[11:]) )
 					print "thread gestartet: " + str(newThreadLockNumber)
+					
+				# start retrieving timestamp from GPS and set the system clock
+				elif cmd[0:12] == 'gpstimestart':	#e.g. gpstimestart300
+					self.initGetTimeFromGPS(cmd[0:12])
+					self.logMessage("cmd: " + cmd, "processCommands")
+					print "thread gestartet: " + str(newThreadLockNumber)
+				
+				# change sms sending phone number
+				elif cmd[0:12] == 'changenumber':	#e.g. changenumber+491703939393
+					self.number = cmd[12:]
 				
 				else:
 					print "command not recognized"
 					self.logMessage("unknown command: " + cmd, "processCommands")
 				
 			except Exception as e:
+				print "processCommands"
 				print e
 				self.logMessage(e, "processCommands")
 			
@@ -433,6 +571,7 @@ class Listener(object):
 
 			# Unplugging the UMTS stick requires a restart
 			except gammu.ERR_DEVICEWRITEERROR as e:
+				print "listenForCommands-DEVICEWRITEERR"
 				print e
 				self.logMessage(e, "listenForCommands")
 				print "restarting in 300 sec..."
@@ -440,6 +579,7 @@ class Listener(object):
 				os.system("reboot")
 				
 			except Exception as e:
+				print "listenForCommands-Exception"
 				print e
 				self.logMessage(e, "listenForCommands")
 
