@@ -42,14 +42,14 @@ CREATE TABLE IF NOT EXISTS `logging` (
 --
 
 INSERT INTO `logging` (`timestamp`, `logger`, `level`, `message`, `thread`, `file`, `line`) VALUES
-('2013-07-30 18:20:32', 'main', 'INFO', 'patrick.vogt@hs-augsburg.de logged in.', 13068, '/var/www/index.php', '24'),
-('2013-07-30 18:26:57', 'main', 'INFO', 'dietmar.sach@hs-augsburg.de logged in.', 13068, '/var/www/index.php', '24'),
-('2013-07-30 18:40:14', 'main', 'INFO', 'dietmar.sach@hs-augsburg.de logged in.', 13065, '/var/www/index.php', '24'),
-('2013-07-30 18:40:27', 'main', 'INFO', 'dietmar.sach@hs-augsburg.de logged in.', 13071, '/var/www/index.php', '24'),
-('2013-07-30 19:21:27', 'main', 'INFO', 'dietmar.sach@hs-augsburg.de logged in.', 13094, '/var/www/index.php', '24'),
-('2013-07-30 19:21:34', 'main', 'INFO', 'dietmar.sach@hs-augsburg.de logged in.', 12781, '/var/www/index.php', '24'),
-('2013-07-30 20:18:08', 'main', 'INFO', 'patrick.vogt@hs-augsburg.de logged in.', 13195, '/var/www/index.php', '32'),
-('2013-07-30 20:18:12', 'main', 'INFO', 'patrick.vogt@hs-augsburg.de logged in.', 13195, '/var/www/index.php', '32');
+('2013-07-30 18:20:32', 'main', 'INFO', 'pv@email-address.de logged in.', 13068, '/var/www/index.php', '24'),
+('2013-07-30 18:26:57', 'main', 'INFO', 'ds@email-address.de logged in.', 13068, '/var/www/index.php', '24'),
+('2013-07-30 18:40:14', 'main', 'INFO', 'ds@email-address.de logged in.', 13065, '/var/www/index.php', '24'),
+('2013-07-30 18:40:27', 'main', 'INFO', 'ds@email-address.de logged in.', 13071, '/var/www/index.php', '24'),
+('2013-07-30 19:21:27', 'main', 'INFO', 'ds@email-address.de logged in.', 13094, '/var/www/index.php', '24'),
+('2013-07-30 19:21:34', 'main', 'INFO', 'ds@email-address.de logged in.', 12781, '/var/www/index.php', '24'),
+('2013-07-30 20:18:08', 'main', 'INFO', 'pv@email-address.de logged in.', 13195, '/var/www/index.php', '32'),
+('2013-07-30 20:18:12', 'main', 'INFO', 'pv@email-address.de logged in.', 13195, '/var/www/index.php', '32');
 
 -- --------------------------------------------------------
 
@@ -124,9 +124,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `email`, `password`, `name`, `surname`) VALUES
-(1, 'patrick.vogt@hs-augsburg.de', 'effaa50d1f666482d29f7e342790086b', 'Vogt', 'Patrick'),
-(2, 'dietmar.sach@hs-augsburg.de', '74faae67252bb78ac06736463e5d4d64', 'Sach', 'Dietmar'),
-(3, 'anja.metzner@hs-augsburg.de', 'd450c5dbcc10db0749277efc32f15f9f', 'Anja', 'Metzner');
+(1, 'pv@email-address.de', 'effaa50d1f666482d29f7e342790086b', 'Vogt', 'Patrick'),
+(2, 'ds@email-address.de', '74faae67252bb78ac06736463e5d4d64', 'Sach', 'Dietmar'),
+(3, 'am@email-address.de', 'd450c5dbcc10db0749277efc32f15f9f', 'Anja', 'Metzner');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
