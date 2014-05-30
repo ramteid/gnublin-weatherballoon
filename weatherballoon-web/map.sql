@@ -124,9 +124,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `email`, `password`, `name`, `surname`) VALUES
-(1, 'pv@email-address.de', 'effaa50d1f666482d29f7e342790086b', 'Vogt', 'Patrick'),
-(2, 'ds@email-address.de', '74faae67252bb78ac06736463e5d4d64', 'Sach', 'Dietmar'),
-(3, 'am@email-address.de', 'd450c5dbcc10db0749277efc32f15f9f', 'Anja', 'Metzner');
+(1, 'pv@email-address.de', 'effaa50d1f666482d29f7e342790086b', 'A', 'AA'),
+(2, 'ds@email-address.de', '74faae67252bb78ac06736463e5d4d64', 'B', 'BB'),
+(3, 'am@email-address.de', 'd450c5dbcc10db0749277efc32f15f9f', 'C', 'CC');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
